@@ -5,17 +5,8 @@ if ( ! function_exists('codesaur_environment')) {
 
     $vendor_dir = dirname(__FILE__) . "/../..";
 
-    $domain_parts = \explode('.', $_SERVER['SERVER_NAME']);
-    $domain_parts_count = count($domain_parts);
-    if ($domain_parts_count > 2
-            && $domain_parts[$domain_parts_count - 3] != 'www') {
-        $env_file_name = '.env_' . $domain_parts[$domain_parts_count - 3];
-    } else {
-        $env_file_name = null;
-    }
-
     try {
-        Dotenv\Dotenv::create("$vendor_dir/..", $env_file_name)->load();
+        Dotenv\Dotenv::create("$vendor_dir/..")->load();
     } catch (Exception $ex) {
         error_log($ex->getMessage());
     } finally {
