@@ -1,0 +1,7 @@
+/tmp/
+/vendor/
+/nbproject/
+
+.env
+
+composer.lock
