@@ -5,19 +5,15 @@
  *
  * An elegant object-oriented application development framework for PHP 7.1 or newer
  *
- * @package   Swift seizer
  * @version   7
+ * @package   Erketu
  * @author    Narankhuu N <codesaur@gmail.com>, +976 99000287
  * @copyright Copyright (c) 2012 - 2020. Munkhiin Ololt LLC. +976 99000287, contact@ololt.mn, https://ololt.mn
  *
- * @creatures Velociraptor (/vɪˈlɒsɪræptər/; meaning "swift seizer" in Latin) is a genus of dromaeosaurid theropod dinosaur
- *            that lived approximately 75 to 71 million years ago during the later part of the Cretaceous Period.
- *            Two species are currently recognized, although others have been assigned in the past.
- *            The type species is V. mongoliensis; fossils of this species have been discovered in Mongolia.
- *            A second species, V. osmolskae, was named in 2008 for skull material from Inner Mongolia.
- *
- *            The Indoraptor was a new hybrid dinosaur that served as the primary creature antagonist
- *            and the secondary antagonist of Jurassic World: Fallen Kingdom.
+ * @creature  Erketu (meaning "Erketü Tengri -> creator-god" / монголоор "Эрхэт тэнгэр") is a genus of somphospondylan sauropod dinosaur
+ *            that lived in Asia during the Late Cretaceous roughly between 102 million and 86 million years ago. Its fossils were found in Mongolia
+ *            between 2002 and 2003 during a field expedition and first described in 2006; later on in 2010 due to some cervicals that were left behind in the expedition.
+ *            Erketu represent one of the first sauropods described from the Bayan Shireh Formation. The elongated cervical vertebrae of Erketu seemsto indicate that it was the sauropod with the longest neck relative to its body size.
  */
 
 final class codesaur
