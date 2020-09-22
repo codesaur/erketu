@@ -156,22 +156,22 @@ class Application extends Base implements ApplicationInterface
         exit;
     }
 
-    public function webUrl(bool $global) : string
+    public function webUrl(bool $relative) : string
     {
-        if ( ! $global) {
+        if ($relative) {
             return $this->request->getPath();
         }
         
         return $this->request->getHttpHost() . $this->request->getPath();
     }
 
-    public function publicUrl(bool $global = false) : string
+    public function publicUrl(bool $relative = true) : string
     {
-        return $this->webUrl($global) . '/public';
+        return $this->webUrl($relative) . '/public';
     }
 
-    public function resourceUrl(bool $global = false) : string
+    public function resourceUrl(bool $relative = true) : string
     {
-        return $this->webUrl($global) . '/resource';
+        return $this->webUrl($relative) . '/resource';
     }
 }
