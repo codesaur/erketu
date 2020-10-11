@@ -15,7 +15,7 @@ if ( ! function_exists('codesaur_environment')) {
 
     ini_set('log_errors', 'On');
     ini_set('display_errors', DEBUG ? 'On' : 'Off');
-    ini_set('error_log', "$vendor_dir/../tmp/code.log");
+    ini_set('error_log', "$vendor_dir/../logs/code.log");
 
     $timezone = getenv('TIME_ZONE');
     if ($timezone) {
