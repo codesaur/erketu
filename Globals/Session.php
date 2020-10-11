@@ -25,7 +25,7 @@ class Session extends superGlobal
     }
     
     public function start(
-            $name = 'codesaur', $options = array(), $lifetime = null,
+            $name, $options = array(), $lifetime = null,
             $path = '/', $domain = null, bool $secure = true, bool $httponly = true)
     {
         // http://blog.teamtreehouse.com/how-to-create-bulletproof-sessions - Interesting!

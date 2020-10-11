@@ -67,14 +67,14 @@ class Application extends Base implements ApplicationInterface
         $this->header = new Header();
 
         $this->session = new Session();
-        $this->session->start();
+        $this->session->start('codesaur');
         
         $this->response = new Response();
 
         $this->user = new AuthUser();
         
-        $this->language = new Language($this->session);
         $this->translation = new Translation();
+        $this->language = new Language($this->session);
     }
     
     public function getNamespace()
