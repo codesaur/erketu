@@ -23,9 +23,7 @@ interface FileInterface
     public function isImage(string $filename) : bool;
     public function isDir(string $filename) : bool;
     
-    public function upload(
-            $input, string $uploadpath,
-            array $allowed = [], $overwrite = false, $sizelimit = false);
+    public function upload($input, string $uploadpath, array $allowed = [], $overwrite = false, $sizelimit = false);
 
     public function read(int $length = 4096) : string;
     public function readFull(int $length = 4096) : array;
