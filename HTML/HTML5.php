@@ -1,6 +1,6 @@
 <?php namespace codesaur\HTML;
 
-class HTML5 implements HTML5Interface
+class HTML5
 {
     // HTML5 a
     // -------

@@ -1,8 +1,8 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
 use codesaur\Globals\Session;
 
-class Language extends Base implements LanguageInterface
+class Language extends Base
 {
     private $_current;
     private $_languages;

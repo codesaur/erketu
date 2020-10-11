@@ -1,9 +1,9 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
-use codesaur\Generic\OutputBuffer;
+use codesaur\Common\Base;
+use codesaur\Common\OutputBuffer;
 
-class Response extends Base implements ResponseInterface
+class Response extends Base
 {
     public $ob;
     

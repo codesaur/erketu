@@ -1,8 +1,8 @@
 <?php namespace codesaur\DataObject;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Column extends Base implements ColumnInterface
+class Column extends Base
 {
     private $name;
     private $type;

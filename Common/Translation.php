@@ -1,6 +1,6 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
-class Translation extends Base implements TranslationInterface
+class Translation extends Base
 {
     public $text;
     public $load;

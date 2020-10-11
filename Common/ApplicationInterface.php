@@ -1,4 +1,4 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
 interface ApplicationInterface
 {

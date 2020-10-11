@@ -1,6 +1,6 @@
 <?php namespace codesaur\Http;
 
-abstract class Routing implements RoutingInterface
+abstract class Routing
 {
     public function match(Router &$router, Request $request)
     {

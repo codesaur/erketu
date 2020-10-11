@@ -20,14 +20,14 @@ final class codesaur
 {
     private static $_application;
 
-    public static function start(codesaur\Generic\Application $app)
+    public static function start(codesaur\Common\Application $app)
     {
         self::$_application = $app;
 
         self::app()->launch();
     }
     
-    public static function app() : codesaur\Generic\Application
+    public static function app() : codesaur\Common\Application
     {
         return self::$_application;
     }
@@ -52,7 +52,7 @@ final class codesaur
         return self::app()->response;
     }
     
-    public static function buffer() : codesaur\Generic\OutputBuffer
+    public static function buffer() : codesaur\Common\OutputBuffer
     {
         return self::response()->ob;
     }
@@ -72,17 +72,17 @@ final class codesaur
         return self::app()->controller;
     }
 
-    public static function user() : codesaur\Generic\AuthUser
+    public static function user() : codesaur\Common\AuthUser
     {
         return self::app()->user;
     }
 
-    public static function language() : codesaur\Generic\Language
+    public static function language() : codesaur\Common\Language
     {
         return self::app()->language;
     }
     
-    public static function translation() : codesaur\Generic\Translation
+    public static function translation() : codesaur\Common\Translation
     {
         return self::app()->translation;
     }

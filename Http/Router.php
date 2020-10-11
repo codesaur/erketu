@@ -1,8 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Router extends Base implements RouterInterface
+class Router extends Base
 {
     private $_routes = array();
     

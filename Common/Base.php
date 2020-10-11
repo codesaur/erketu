@@ -1,6 +1,6 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
-abstract class Base implements BaseInterface
+abstract class Base
 {
     public function callFunc(callable $callback, $parameter = null)
     {

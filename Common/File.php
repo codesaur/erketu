@@ -1,6 +1,6 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
-class File extends Base implements FileInterface
+class File extends Base
 {
     private $_error = 0;
     public $handle = null;

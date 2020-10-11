@@ -1,8 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Route extends Base implements RouteInterface
+class Route extends Base
 {
     private $_pattern;
 

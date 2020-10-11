@@ -1,6 +1,6 @@
 <?php namespace codesaur\DataObject;
 
-class Describe implements DescribeInterface
+class Describe
 {
     private $_columns;
 

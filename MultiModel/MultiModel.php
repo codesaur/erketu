@@ -5,7 +5,7 @@ use codesaur\DataObject\Model;
 use codesaur\DataObject\Column;
 use codesaur\DataObject\Describe;
 
-class MultiModel extends InitableModel implements MultiModelInterface
+class MultiModel extends InitableModel
 {
     public $content;
  

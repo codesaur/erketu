@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "codesaur\\Generic\\": "Generic/",
+            "codesaur\\Common\\": "Common/",
             "codesaur\\Globals\\": "Globals/",
             "codesaur\\Http\\": "Http/",
             "codesaur\\HTML\\": "HTML/",

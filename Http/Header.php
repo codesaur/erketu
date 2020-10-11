@@ -1,8 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Header extends Base implements HeaderInterface
+class Header extends Base
 {
     const HTTP_OK        = 200;
     const HTTP_FOUND     = 302;

@@ -1,9 +1,9 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 use codesaur\Globals\Server;
 
-class Request extends Base implements RequestInterface
+class Request extends Base
 {
     private $_domain;
     private $_httphost;

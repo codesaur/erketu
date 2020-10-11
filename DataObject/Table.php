@@ -1,8 +1,8 @@
 <?php namespace codesaur\DataObject;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Table extends Base implements TableInterface
+class Table extends Base
 {
     public $do;       // CDO - codesaur DataObject
     public $describe; // Table structure

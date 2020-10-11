@@ -1,4 +1,4 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
 use codesaur\Http\Header;
 use codesaur\Http\Router;
@@ -96,11 +96,7 @@ class Application extends Base implements ApplicationInterface
             return $this->error('Unknown route!');
         }
 
-        if (\strpos($this->route->getController(), '\\')) {
-            $controller = $this->route->getController();
-        } else {
-            $controller = $this->getNamespace() . 'Controllers\\' . $this->route->getController();
-        }
+        $controller = $this->route->getController();
 
         if ( ! \class_exists($controller)) {
             return $this->error("{$this->route->getController()} is not available!");
@@ -116,11 +112,11 @@ class Application extends Base implements ApplicationInterface
     
     public function execute($class, string $action, array $args)
     {
-        //if (DEBUG) {
+        if (\getenv('OUTPUT_COMPRESS') == 'true') {
+            $this->response->start(array($this->response->ob, 'compress'), 0, PHP_OUTPUT_HANDLER_STDFLAGS);
+        } else {
             $this->response->start();
-        //} else {
-            //$this->response->start(array($this->response->ob, 'compress'), 0, PHP_OUTPUT_HANDLER_STDFLAGS);
-        //}
+        }
         
         $this->callFuncArray(array($class, $action), $args);
         
@@ -130,7 +126,7 @@ class Application extends Base implements ApplicationInterface
     public function error(string $message, int $status = 404)
     {
         if ( ! \headers_sent()) {
-            \http_response_code($status);//\header("Status: Error $status", true, $status);
+            \http_response_code($status);
         }
         
         \error_log("Error[$status]: $message");

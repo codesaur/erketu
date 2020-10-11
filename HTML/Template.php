@@ -1,9 +1,9 @@
 <?php namespace codesaur\HTML;
 
-use codesaur\Generic\Base;
-use codesaur\Generic\OutputBuffer;
+use codesaur\Common\Base;
+use codesaur\Common\OutputBuffer;
 
-class Template extends Base implements TemplateInterface
+class Template extends Base
 {
     protected $_html;
     protected $_file;

@@ -1,8 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
-class Controller extends Base implements ControllerInterface
+class Controller extends Base
 {
     public function getNick() : string
     {

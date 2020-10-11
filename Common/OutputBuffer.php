@@ -1,6 +1,6 @@
-<?php namespace codesaur\Generic;
+<?php namespace codesaur\Common;
 
-class OutputBuffer extends Base implements OutputBufferInterface
+class OutputBuffer extends Base
 {
     public function start($output_callback = null, $chunk_size = 0, $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
     {

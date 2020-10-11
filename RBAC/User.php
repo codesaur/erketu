@@ -1,6 +1,6 @@
 <?php namespace codesaur\RBAC;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 use codesaur\DataObject\CDO;
 use codesaur\DataObject\MySQL;
 

@@ -1,6 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
 class Client extends Base
 {

@@ -1,6 +1,6 @@
 <?php namespace codesaur\Globals;
 
-use codesaur\Generic\Base;
+use codesaur\Common\Base;
 
 abstract class superGlobal extends Base
 {

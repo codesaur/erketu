@@ -1,6 +1,6 @@
 <?php namespace codesaur\DataObject;
 
-class Model extends Table implements ModelInterface
+class Model extends Table
 {
     public function getNick() : string
     {
