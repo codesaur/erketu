@@ -1,6 +1,6 @@
 <?php namespace codesaur\HTML;
 
-abstract class IndexTemplate
+abstract class IndexTemplate extends TwigTemplate
 {
     function __construct(string $template = null, array $vars = null)
     {
