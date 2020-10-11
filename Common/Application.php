@@ -132,7 +132,7 @@ class Application extends Base implements ApplicationInterface
         \error_log("Error[$status]: $message");
         
         try {
-            $controller = $this->getNamespace() . 'Controllers\\ErrorController';
+            $controller = $this->getNamespace() . 'Error\\ErrorController';
             $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $status]);
         } catch (\Throwable $t) {
             $host = 'https://';
