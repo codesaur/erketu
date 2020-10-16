@@ -1,6 +1,6 @@
 <?php namespace codesaur\RBAC;
 
-use codesaur\Common\Base;
+use codesaur\Base\Base;
 use codesaur\DataObject\MySQL;
 
 class User extends Base

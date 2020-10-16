@@ -1,7 +1,7 @@
 <?php namespace codesaur\HTML;
 
-use codesaur\Common\Base;
-use codesaur\Common\OutputBuffer;
+use codesaur\Base\Base;
+use codesaur\Base\OutputBuffer;
 
 class Template extends Base
 {

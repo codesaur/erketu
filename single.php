@@ -20,14 +20,14 @@ final class codesaur
 {
     private static $_application;
 
-    public static function start(codesaur\Common\Application $app)
+    public static function start(codesaur\Base\Application $app)
     {
         self::$_application = $app;
 
         self::app()->launch();
     }
     
-    public static function app() : codesaur\Common\Application
+    public static function app() : codesaur\Base\Application
     {
         return self::$_application;
     }
@@ -52,49 +52,50 @@ final class codesaur
         return self::app()->response;
     }
     
-    public static function buffer() : codesaur\Common\OutputBuffer
+    public static function buffer() : codesaur\Base\OutputBuffer
     {
         return self::response()->ob;
     }
 
-    public static function session() : codesaur\Globals\Session
+    public static function session() : ?codesaur\Globals\Session
     {
-        return self::app()->session;
+        return self::app()->session ?? null;
     }
 
-    public static function route() : codesaur\Http\Route
+    public static function route() : ?codesaur\Http\Route
     {
-        return self::app()->route;
+        return self::app()->route ?? null;
     }
 
     public static function controller()
     {
-        return self::app()->controller;
+        return self::app()->controller ?? null;
     }
 
-    public static function user() : codesaur\Common\AuthUser
+    public static function user() : ?codesaur\Base\AuthUser
     {
-        return self::app()->user;
+        return self::app()->user ?? null;
     }
 
-    public static function language() : codesaur\Common\Language
+    public static function language() : ?codesaur\Base\Language
     {
-        return self::app()->language;
+        return self::app()->language ?? null;
     }
     
-    public static function translation() : codesaur\Common\Translation
+    public static function translation() : ?codesaur\Base\Translation
     {
-        return self::app()->translation;
+        return self::app()->translation ?? null;
     }
 
     public static function flag()
     {
-        return self::language()->current();
+        return self::language() instanceof codesaur\Base\Language ? self::language()->current() : '';
     }
 
     public static function text($key) : string
     {
-        if (isset(self::translation()->text[$key])) {
+        if (self::translation() instanceof codesaur\Base\Translation
+                && isset(self::translation()->text[$key])) {
             return self::translation()->text[$key];
         }
 

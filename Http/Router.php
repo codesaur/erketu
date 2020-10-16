@@ -1,6 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Common\Base;
+use codesaur\Base\Base;
 
 class Router extends Base
 {

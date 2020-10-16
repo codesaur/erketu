@@ -1,7 +1,7 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Common\Base;
-use codesaur\Common\OutputBuffer;
+use codesaur\Base\Base;
+use codesaur\Base\OutputBuffer;
 
 class Response extends Base
 {

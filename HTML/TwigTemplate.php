@@ -3,6 +3,7 @@
 use Twig\TwigFilter;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use Twig\Loader\LoaderInterface;
 
 class TwigTemplate extends Template
 {
@@ -11,14 +12,13 @@ class TwigTemplate extends Template
         $this->_vars[$key] = $value;
     }
     
-    public function twig(string $template, array $vars = null)
+    public function getLoader($html) : LoaderInterface
     {
-        (new TwigTemplate($template, $vars))->render();
+        return new ArrayLoader(array('result' => $html));
     }
     
-    protected function compile(string $html) : string
+    public function getEnvironment(LoaderInterface $loader) : Environment
     {
-        $loader = new ArrayLoader(array('result' => $html));
         $twig = new Environment($loader, array('autoescape' => false));
         
         $twig->addGlobal('app', \codesaur::app());
@@ -32,6 +32,18 @@ class TwigTemplate extends Template
         $twig->addFilter(new TwigFilter('link', function($string, $params = []) { return \codesaur::link($string, $params); }));
         $twig->addFilter(new TwigFilter('json_decode', function($data, $param = true) { return \json_decode($data, $param); }));
         
-        return $twig->render('result', $this->getVars());
+        return $twig;
+    }
+
+    protected function compile(string $html) : string
+    {
+        $loader = $this->getLoader($html);
+
+        return $this->getEnvironment($loader)->render('result', $this->getVars());
+    }
+
+    public function twig(string $template, array $vars = null)
+    {
+        (new TwigTemplate($template, $vars))->render();
     }
 }

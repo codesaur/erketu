@@ -1,4 +1,4 @@
-<?php namespace codesaur\Common;
+<?php namespace codesaur\Base;
 
 class OutputBuffer extends Base
 {

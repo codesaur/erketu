@@ -1,11 +1,9 @@
-<?php namespace codesaur\Common;
+<?php namespace codesaur\Base;
 
 use codesaur\Http\Header;
 use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
-
-use codesaur\Globals\Session;
 
 class Application extends Base implements ApplicationInterface
 {
@@ -14,16 +12,10 @@ class Application extends Base implements ApplicationInterface
     public $request;
     public $router;
     public $header;
-    public $session;
     public $response;
 
     public $route;
-    public $controller;    
-    
-    public $user;
-    
-    public $language;
-    public $translation;
+    public $controller;
     
     function __construct(array $config)
     {
@@ -65,16 +57,8 @@ class Application extends Base implements ApplicationInterface
         
         $this->router = new Router();
         $this->header = new Header();
-
-        $this->session = new Session();
-        $this->session->start('codesaur');
         
         $this->response = new Response();
-
-        $this->user = new AuthUser();
-        
-        $this->translation = new Translation();
-        $this->language = new Language($this->session);
     }
     
     public function getNamespace()
@@ -132,7 +116,7 @@ class Application extends Base implements ApplicationInterface
         \error_log("Error[$status]: $message");
         
         try {
-            $controller = $this->getNamespace() . 'Common\\ErrorController';
+            $controller = $this->getNamespace() . 'ErrorController';
             $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $status]);
         } catch (\Throwable $t) {
             $host = 'https://';

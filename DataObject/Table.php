@@ -1,6 +1,6 @@
 <?php namespace codesaur\DataObject;
 
-use codesaur\Common\Base;
+use codesaur\Base\Base;
 
 class Table extends Base
 {

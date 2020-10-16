@@ -1,4 +1,4 @@
-<?php namespace codesaur\Common;
+<?php namespace codesaur\Base;
 
 use codesaur\Globals\Session;
 
