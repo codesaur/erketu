@@ -50,7 +50,7 @@ class Application extends Base implements ApplicationInterface
         }
     }
     
-    private function initComponents()
+    public function initComponents()
     {
         $this->request = new Request();
         $this->request->initFromGlobal();

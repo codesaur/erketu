@@ -2,6 +2,8 @@
 
 interface ApplicationInterface
 {
+    public function initComponents();
+    
     public function getNamespace();
     
     public function launch();
