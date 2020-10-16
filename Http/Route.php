@@ -20,11 +20,14 @@ class Route extends Base
     
     public function setPattern(string $path)
     {
-        //$this->_pattern = \rtrim(\preg_replace('/\/+/', '\\1/', $path), '/');
-        //$this->_pattern = \rtrim($path, '/');
         $this->_pattern = $path;
     }
     
+    public function getName() : ?string
+    {
+        return $this->name ?? null;
+    }
+
     public function getController() : string
     {
         return $this->_controller;

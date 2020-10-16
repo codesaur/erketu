@@ -17,20 +17,16 @@
         "ext-mbstring": "*",
         "ext-curl": "*",
         "ext-openssl": "*",
-        "phpmailer/phpmailer": "^6.0",
-        "firebase/php-jwt": "^5.0",
-        "twig/twig": "^2.0",
         "vlucas/phpdotenv": "^3.1"
     },
     "autoload": {
         "psr-4": {
             "codesaur\\Base\\": "Base/",
-            "codesaur\\Globals\\": "Globals/",
             "codesaur\\Http\\": "Http/",
             "codesaur\\HTML\\": "HTML/",
+            "codesaur\\Globals\\": "Globals/",
             "codesaur\\DataObject\\": "DataObject/",
-            "codesaur\\MultiModel\\": "MultiModel/",
-            "codesaur\\RBAC\\": "RBAC/"
+            "codesaur\\MultiModel\\": "MultiModel/"
         },
         "files": [
             "environment.php",

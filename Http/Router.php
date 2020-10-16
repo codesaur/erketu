@@ -103,7 +103,7 @@ class Router extends Base
             }
             
             return array($url, $route->getMethods());
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             if (DEBUG) {
                 \error_log($e->getMessage());
             }

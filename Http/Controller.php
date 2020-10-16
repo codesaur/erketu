@@ -8,14 +8,22 @@ class Controller extends Base
     {
         return \str_replace($this->getMeClean(__CLASS__), '', $this->getMeClean());
     }
-
-    public function route() : Route
+    
+    final public function vardump($var, bool $full = true)
     {
-        if (isset($this->route)
-                && $this->route instanceof Route) {
-            return $this->route;
+        if ( ! DEBUG) {
+            return;
         }
+        
+        $debug = \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+        \var_dump(['file' => $debug[0]['file'] ?? '', 'line' => $debug[0]['line'] ?? '']);
 
-        return new Route();
+        if ($full) {
+            \var_dump($var);
+        } elseif (\is_array($var)) {
+            \print_r($var);
+        } else {
+            echo $var;
+        }
     }
 }

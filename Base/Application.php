@@ -83,15 +83,17 @@ class Application extends Base implements ApplicationInterface
         $controller = $this->route->getController();
 
         if ( ! \class_exists($controller)) {
-            return $this->error("{$this->route->getController()} is not available!");
-        }
-        
-        $this->controller = new $controller();
-        if (! $this->controller->hasMethod($this->route->getAction())) {
-            return $this->error("Action named {$this->route->getAction()} is not part of {$this->route->getController()}!");
+            return $this->error("$controller is not available!");
         }
 
-        $this->execute($this->controller, $this->route->getAction(), $this->route->getParameters()); exit;
+        $action = $this->route->getAction();
+        
+        $this->controller = new $controller();
+        if (! $this->controller->hasMethod($action)) {
+            return $this->error("Action named $action is not part of $controller!");
+        }
+
+        $this->execute($this->controller, $action, $this->route->getParameters()); exit;
     }
     
     public function execute($class, string $action, array $args)
@@ -136,22 +138,12 @@ class Application extends Base implements ApplicationInterface
         exit;
     }
 
-    public function webUrl(bool $relative) : string
+    public function getWebUrl(bool $relative) : string
     {
         if ($relative) {
             return $this->request->getPath();
         }
         
         return $this->request->getHttpHost() . $this->request->getPath();
-    }
-
-    public function publicUrl(bool $relative = true) : string
-    {
-        return $this->webUrl($relative) . '/public';
-    }
-
-    public function resourceUrl(bool $relative = true) : string
-    {
-        return $this->webUrl($relative) . '/resource';
     }
 }

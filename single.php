@@ -57,11 +57,6 @@ final class codesaur
         return self::response()->ob;
     }
 
-    public static function session() : ?codesaur\Globals\Session
-    {
-        return self::app()->session ?? null;
-    }
-
     public static function route() : ?codesaur\Http\Route
     {
         return self::app()->route ?? null;
@@ -70,40 +65,6 @@ final class codesaur
     public static function controller()
     {
         return self::app()->controller ?? null;
-    }
-
-    public static function user() : ?codesaur\Base\AuthUser
-    {
-        return self::app()->user ?? null;
-    }
-
-    public static function language() : ?codesaur\Base\Language
-    {
-        return self::app()->language ?? null;
-    }
-    
-    public static function translation() : ?codesaur\Base\Translation
-    {
-        return self::app()->translation ?? null;
-    }
-
-    public static function flag()
-    {
-        return self::language() instanceof codesaur\Base\Language ? self::language()->current() : '';
-    }
-
-    public static function text($key) : string
-    {
-        if (self::translation() instanceof codesaur\Base\Translation
-                && isset(self::translation()->text[$key])) {
-            return self::translation()->text[$key];
-        }
-
-        if (DEBUG) {
-            error_log("UNTRANSLATED: $key");
-        }
-
-        return '{' . $key . '}';
     }
 
     public static function link(string $route, array $params = []) : string
