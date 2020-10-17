@@ -30,7 +30,7 @@
         },
         "files": [
             "environment.php",
-            "single.php"
+            "codesaur.php"
         ]
     },
     "license": "MIT",
