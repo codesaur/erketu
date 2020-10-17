@@ -90,7 +90,7 @@ class codesaur
         self::header()->redirect($url);
     }
 
-    public static function error($errno, $errstr, $errfile, $errline)
+    final public static function error($errno, $errstr, $errfile, $errline)
     {
         switch ($errno) {
             case E_USER_ERROR:
