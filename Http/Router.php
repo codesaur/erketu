@@ -40,7 +40,7 @@ class Router extends Base
     
     public function match(string $cleanedUrl, string $method)
     {
-        foreach ($this->_routes as $idx => $route) {
+        foreach ($this->_routes as $name_or_index => $route) {
             if ( ! \in_array($method, $route->getMethods())) {
                 continue;
             }
@@ -65,7 +65,7 @@ class Router extends Base
             }
             $route->setParameters($params);
             
-            $route->name = $idx;
+            $route->name = $name_or_index;
             
             return $route;
         }
