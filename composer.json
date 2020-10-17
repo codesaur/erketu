@@ -29,8 +29,8 @@
             "codesaur\\MultiModel\\": "MultiModel/"
         },
         "files": [
-            "environment.php",
-            "codesaur.php"
+            "codesaur.php",
+            "environment.php"
         ]
     },
     "license": "MIT",
