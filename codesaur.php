@@ -114,7 +114,7 @@ class codesaur
 
     public static function about() : string
     {
-        return 'codesaur v7 - Swift seizer';
+        return 'codesaur - framework';
     }
 
     public static function author() : string
