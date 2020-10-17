@@ -69,8 +69,7 @@ class Route extends Base
     }
     
     public function getRegex() {
-        return \preg_replace_callback(
-                '/:(\w+)/', array(&$this, 'substituteFilter'), $this->getPattern());
+        return \preg_replace_callback('/:(\w+)/', array(&$this, 'substituteFilter'), $this->getPattern());
     }
     
     public function substituteFilter($matches) : string

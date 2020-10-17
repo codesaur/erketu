@@ -16,7 +16,7 @@
  *            Erketu represent one of the first sauropods described from the Bayan Shireh Formation. The elongated cervical vertebrae of Erketu seemsto indicate that it was the sauropod with the longest neck relative to its body size.
  */
 
-final class codesaur
+class codesaur
 {
     private static $_application;
 
