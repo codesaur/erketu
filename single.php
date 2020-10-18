@@ -67,24 +67,29 @@ final class codesaur
         return self::app()->controller ?? null;
     }
     
-    public static function user() : ?codesaur\Base\AuthUser
+    public static function user() : codesaur\Base\AuthUser
     {
-        return self::app()->user ?? null;
+        return self::app()->user;
     }
 
-    public static function language() : ?codesaur\Base\Language
+    public static function helper() : codesaur\Base\Helper
     {
-        return self::app()->language ?? null;
+        return self::app()->helper;
+    }
+
+    public static function language() : codesaur\Base\Language
+    {
+        return self::app()->language;
     }
     
-    public static function translation() : ?codesaur\Base\Translation
+    public static function translation() : codesaur\Base\Translation
     {
-        return self::app()->translation ?? null;
+        return self::app()->translation;
     }
 
-    public static function session() : ?codesaur\Globals\Session
+    public static function session() : codesaur\Globals\Session
     {
-        return self::app()->session ?? null;
+        return self::app()->session;
     }
 
     public static function link(string $route, array $params = []) : string

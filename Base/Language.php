@@ -2,17 +2,15 @@
 
 class Language extends Base
 {
-    private $_alias;
     private $_current;
     private $_languages;
 
-    public function create(array $languages, string $alias)
+    public function create(array $languages)
     {
         if (empty($languages)) {
             return;
         }
         
-        $this->_alias = $alias;
         $this->_languages = $languages;
         $this->_current = \key($languages);
     }
@@ -108,10 +106,5 @@ class Language extends Base
     public function name() : string
     {
         return $this->full();
-    }
-
-    public function getAlias() : string
-    {
-        return $this->_alias;
     }
 }

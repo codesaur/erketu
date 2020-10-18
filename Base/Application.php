@@ -4,10 +4,7 @@ use codesaur\Http\Header;
 use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
-
-use codesaur\DataObject\MySQL;
-
-use PHPMailer\PHPMailer\PHPMailer;
+use codesaur\Globals\Session;
 
 class Application extends Base implements ApplicationInterface
 {
@@ -18,6 +15,12 @@ class Application extends Base implements ApplicationInterface
     public $header;
     public $response;
 
+    public $user;
+    public $helper;
+    public $session;
+    public $language;
+    public $translation;
+    
     public $route;
     public $controller;
     
@@ -27,7 +30,19 @@ class Application extends Base implements ApplicationInterface
             return $this->error('Invalid application configuration!');
         }
         
-        $this->initComponents();
+        $this->request = new Request();
+        $this->request->initFromGlobal();
+        
+        $this->router = new Router();
+        $this->header = new Header();
+        
+        $this->response = new Response();
+
+        $this->user = new AuthUser();
+        $this->helper = new Helper();
+        $this->session = new Session();
+        $this->language = new Language();
+        $this->translation = new Translation();
         
         $url_segments = $this->request->getUrlSegments();
         if ( ! empty($url_segments)) {
@@ -54,22 +69,6 @@ class Application extends Base implements ApplicationInterface
         }
     }
     
-    public function initComponents()
-    {
-        $this->request = new Request();
-        $this->request->initFromGlobal();
-        
-        $this->router = new Router();
-        $this->header = new Header();
-        
-        $this->response = new Response();
-    }
-    
-    public function getNamespace()
-    {
-        return $this->_namespace;
-    }
-
     public function launch()
     {   
         $routing = $this->getNamespace() . 'Routing';
@@ -113,17 +112,17 @@ class Application extends Base implements ApplicationInterface
         $this->response->send();
     }
     
-    public function error(string $message, int $status = 404)
+    public function error(string $message, int $status_code = 404)
     {
         if ( ! \headers_sent()) {
-            \http_response_code($status);
+            \http_response_code($status_code);
         }
         
-        \error_log("Error[$status]: $message");
+        \error_log("Error[$status_code]: $message");
         
         try {
             $controller = $this->getNamespace() . 'ErrorController';
-            $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $status]);
+            $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $status_code]);
         } catch (\Throwable $t) {
             $host = 'https://';
             $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -135,11 +134,16 @@ class Application extends Base implements ApplicationInterface
             }
 
             echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>' . 'Error ' .
-                    $status . '</title></head><body><h1>Error ' . $status . '</h1><p>' . $message .
+                    $status_code . '</title></head><body><h1>Error ' . $status_code . '</h1><p>' . $message .
                     '</p><hr><a href="' . $host . '">' . $host . '</a>' . ($notice ?? null) . '</body></html>';
         }
         
         exit;
+    }
+
+    public function getNamespace()
+    {
+        return $this->_namespace;
     }
 
     public function getWebUrl(bool $relative) : string
@@ -151,59 +155,13 @@ class Application extends Base implements ApplicationInterface
         return $this->request->getHttpHost() . $this->request->getPath();
     }
     
-    public function getPDOconnection() : MySQL
+    public function getPublicUrl(bool $relative = true) : string
     {
-        $configuration = array(
-            'driver'    => \getenv('DB_DRIVER') ?: 'mysql',
-            'host'      => \getenv('DB_HOST') ?: 'localhost',
-            'username'  => \getenv('DB_USERNAME') ?: 'root',
-            'password'  => \getenv('DB_PASSWORD') ?: '',
-            'name'      => \getenv('DB_NAME') ?: 'indoraptor',
-            'engine'    => \getenv('DB_ENGINE') ?: 'InnoDB',
-            'charset'   => \getenv('DB_CHARSET') ?: 'utf8',
-            'collation' => \getenv('DB_COLLATION') ?: 'utf8_unicode_ci',
-            'options'   => array(
-                \PDO::ATTR_ERRMODE     => DEBUG ?
-                \PDO::ERRMODE_EXCEPTION : \PDO::ERRMODE_WARNING,
-                \PDO::ATTR_PERSISTENT  => \getenv('DB_PERSISTENT') == 'true'
-            )
-        );
-        
-        $conn = new MySQL($configuration);
-        
-        if ($conn->alive()) {
-            if (\getenv('TIME_ZONE_UTC')) {
-                $conn->exec('SET time_zone = ' . $conn->quote(\getenv('TIME_ZONE_UTC')));
-            }
-        }
-        
-        return $conn;
+        return $this->getWebUrl($relative) . '/public';
     }
-    
-    public function getPHPMailer($record, array $options = array(
-        'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true)) : ?PHPMailer
+
+    public function getResourceUrl(bool $relative = true) : string
     {
-        if (empty($record) || ! isset($record['charset']) || ! isset($record['host']) || ! isset($record['port'])
-                || ! isset($record['is_smtp']) || ! isset($record['smtp_auth']) || ! isset($record['smtp_secure'])
-                || ! isset($record['username']) || ! isset($record['password']) || ! isset($record['email']) || ! isset($record['name'])) {
-            return null;
-        }
-
-        $mailer = new PHPMailer(false);
-        if (((int) $record['is_smtp']) == 1) {
-           $mailer->IsSMTP(); 
-        }
-        $mailer->CharSet = $record['charset'];
-        $mailer->SMTPAuth = (bool)((int) $record['smtp_auth']);
-        $mailer->SMTPSecure = $record['smtp_secure'];
-        $mailer->Host = $record['host'];
-        $mailer->Port = $record['port'];            
-        $mailer->Username = $record['username'];
-        $mailer->Password = $record['password'];
-        $mailer->SetFrom($record['email'], $record['name']);
-        $mailer->AddReplyTo($record['email'], $record['name']);
-        $mailer->SMTPOptions = array('ssl' => $options);
-
-        return $mailer;
+        return $this->getWebUrl($relative) . '/resource';
     }
 }

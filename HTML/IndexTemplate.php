@@ -85,7 +85,7 @@ abstract class IndexTemplate extends TwigTemplate
         }
     }
     
-    final protected function setContentIndex($content)
+    public function setContentIndex($content)
     {
         if ($content instanceof TwigTemplate) {
             $content->set('index', $this);
