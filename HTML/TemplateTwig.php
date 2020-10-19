@@ -1,12 +1,13 @@
 <?php namespace codesaur\HTML;
 
+use Twig\Markup;
 use Twig\TwigFilter;
 use Twig\Environment;
 use Twig\TwigFunction;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 
-class TwigTemplate extends Template
+class TemplateTwig extends Template
 {
     protected $twig;
     
@@ -15,10 +16,16 @@ class TwigTemplate extends Template
         parent::__construct($template, $vars);
         
         $this->twig = new Environment(new ArrayLoader(), array('autoescape' => false));        
-        $this->twig->addFilter(new TwigFilter('int', function($variable) { return \intval($variable); }));
-        $this->twig->addFilter(new TwigFilter('json_decode', function($data, $param = true) { return \json_decode($data, $param); }));
+        $this->addFilter('int', function($variable) { return \intval($variable); });
+        $this->addFilter('json_decode', function($data, $param = true) { return \json_decode($data, $param); });
+        $this->addFunction('asset_script', function($src, $attr = 'defer') {
+            return new Markup('<script ' . $attr . 'src="' . $src . '" type="text/javascript"></script>', 'UTF-8');
+        });
+        $this->addFunction('asset_stylesheet', function($href, $attr = null) {
+            return new Markup('<link href="' . $href . '" rel="stylesheet" type="text/css" ' . $attr . '>', 'UTF-8');
+        });
     }
-        
+    
     public function set(string $key, $value)
     {
         $this->_vars[$key] = $value;
@@ -36,7 +43,7 @@ class TwigTemplate extends Template
     
     public function addGlobal($name, $value)
     {
-        $this->twig->addGlobal($name, $value);
+        $this->twig->addMacro($name, $value);
     }
 
     public function addFilter(string $name, $callable = null, array $options = [])
