@@ -43,7 +43,7 @@ class TemplateTwig extends Template
     
     public function addGlobal($name, $value)
     {
-        $this->twig->addMacro($name, $value);
+        $this->twig->addGlobal($name, $value);
     }
 
     public function addFilter(string $name, $callable = null, array $options = [])
