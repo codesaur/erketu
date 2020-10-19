@@ -18,10 +18,10 @@ class TemplateTwig extends Template
         $this->twig = new Environment(new ArrayLoader(), array('autoescape' => false));        
         $this->addFilter('int', function($variable) { return \intval($variable); });
         $this->addFilter('json_decode', function($data, $param = true) { return \json_decode($data, $param); });
-        $this->addFunction('asset_script', function($src, $attr = 'defer') {
+        $this->addFunction('assets_script', function($src, $attr = 'defer') {
             return new Markup('<script ' . $attr . 'src="' . $src . '"></script>', 'UTF-8');
         });
-        $this->addFunction('asset_stylesheet', function($href, $attr = null) {
+        $this->addFunction('assets_stylesheet', function($href, $attr = null) {
             return new Markup('<link href="' . $href . '" rel="stylesheet" type="text/css" ' . $attr . '>', 'UTF-8');
         });
     }
