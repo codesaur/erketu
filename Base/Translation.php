@@ -3,28 +3,45 @@
 class Translation extends Base
 {
     public $text;
-    public $load;
 
     function __construct()
     {
         $this->reset();
     }
     
-    public function append(string $name, array $values) : bool
+    public function create(string $name, array $values) : bool
     {
-        if (\in_array($name, $this->load)) {
+        if (isset($this->text[$name])) {
             return false;
         }
 
-        $this->load[] = $name;
-        $this->text += $values; // I choose + operator over array_merge because of performance speed
-
+        $this->text[$name] = $values;
+        
         return true;
+    }
+    
+    public function get(string $name) : ?array
+    {
+        return $this->text[$name] ?? null;
+    }
+    
+    public function value(string $key) : string
+    {
+        foreach ($this->text as $translation) {
+            if (isset($translation[$key])) {
+                return $translation[$key];
+            }
+        }
+        
+        if (DEBUG) {
+            error_log("UNTRANSLATED: $key");
+        }
+        
+        return '{' . $key . '}';
     }
 
     public function reset()
     {
         $this->text = array();
-        $this->load = array();
     }
 }

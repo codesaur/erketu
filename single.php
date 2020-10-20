@@ -67,31 +67,6 @@ final class codesaur
         return self::app()->controller ?? null;
     }
     
-    public static function user() : codesaur\Base\AuthUser
-    {
-        return self::app()->user;
-    }
-
-    public static function helper() : codesaur\Base\Helper
-    {
-        return self::app()->helper;
-    }
-
-    public static function language() : codesaur\Base\Language
-    {
-        return self::app()->language;
-    }
-    
-    public static function translation() : codesaur\Base\Translation
-    {
-        return self::app()->translation;
-    }
-
-    public static function session() : codesaur\Globals\Session
-    {
-        return self::app()->session;
-    }
-
     public static function link(string $route, array $params = []) : string
     {
         $url = self::router()->generate($route, $params);
@@ -115,17 +90,34 @@ final class codesaur
         self::header()->redirect($url);
     }
 
+    public static function user() : codesaur\Base\AuthUser
+    {
+        return self::app()->user;
+    }
+
+    public static function helper() : codesaur\Base\Helper
+    {
+        return self::app()->helper;
+    }
+
+    public static function session() : codesaur\Globals\Session
+    {
+        return self::app()->session;
+    }
+
+    public static function language() : codesaur\Base\Language
+    {
+        return self::app()->language;
+    }
+    
+    public static function translation() : codesaur\Base\Translation
+    {
+        return self::app()->translation;
+    }
+
     public static function text($key) : string
     {
-        if (isset(self::translation()->text[$key])) {
-            return self::translation()->text[$key];
-        }
-
-        if (DEBUG) {
-            error_log("UNTRANSLATED: $key");
-        }
-
-        return '{' . $key . '}';
+        return self::translation()->value($key);
     }
 
     public static function error($errno, $errstr, $errfile, $errline)
