@@ -7,15 +7,10 @@ class Authentication
     const Locked = 2;
 }
 
-class AuthUser extends Base
+class User extends Base
 {
-    protected $auth;
     protected $data;
-    
-    function __construct()
-    {
-        $this->auth = Authentication::Unset;
-    }
+    protected $auth = Authentication::Unset;
     
     public function login($data)
     {
@@ -96,20 +91,10 @@ class AuthUser extends Base
         $nulldata = null;
         return $nulldata;
     }
-
-    public function hasRole() : bool
-    {
-        if ( ! $this->data['rbac'] instanceof Base ||
-                ! $this->data['rbac']->hasMethod('hasRole')) {
-            return false;
-        }
-        
-        return true;
-    }
     
     public function is($role) : bool
     {
-        if ( ! $this->hasRole()) {
+        if ( ! $this->data['rbac'] instanceof UserInterface) {
             return false;
         }
         
@@ -122,7 +107,7 @@ class AuthUser extends Base
 
     public function can($permission, $role = null) : bool
     {
-        if ( ! $this->hasRole()) {
+        if ( ! $this->data['rbac'] instanceof UserInterface) {
             return false;
         }
         

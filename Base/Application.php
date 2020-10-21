@@ -38,7 +38,7 @@ class Application extends Base implements ApplicationInterface
         
         $this->response = new Response();
 
-        $this->user = new AuthUser();
+        $this->user = new User();
         $this->helper = new Helper();
         $this->session = new Session();
         $this->language = new Language();

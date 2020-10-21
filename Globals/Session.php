@@ -28,7 +28,6 @@ class Session extends superGlobal
             $name, $options = array(), $lifetime = null,
             $path = '/', $domain = null, bool $secure = true, bool $httponly = true)
     {
-        // http://blog.teamtreehouse.com/how-to-create-bulletproof-sessions - Interesting!
         \session_name($name);
         
         $this->_ID = \session_id();

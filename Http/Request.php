@@ -6,9 +6,10 @@ use codesaur\Globals\Server;
 class Request extends Base
 {
     private $_domain;
-    private $_httphost;
     private $_secure;
     private $_method;
+    private $_httphost;
+    private $_app = '';
 
     private $_url;
     private $_path;
@@ -17,8 +18,6 @@ class Request extends Base
     private $_url_clean;
     private $_url_segments;
     private $_url_params = array();
-    
-    private $_app = '';
     
     public function initFromGlobal()
     {

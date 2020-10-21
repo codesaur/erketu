@@ -90,7 +90,7 @@ final class codesaur
         self::header()->redirect($url);
     }
 
-    public static function user() : codesaur\Base\AuthUser
+    public static function user() : codesaur\Base\User
     {
         return self::app()->user;
     }

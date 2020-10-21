@@ -2,12 +2,7 @@
 
 class Translation extends Base
 {
-    public $text;
-
-    function __construct()
-    {
-        $this->reset();
-    }
+    public $text = array();
     
     public function create(string $name, array $values) : bool
     {
@@ -38,10 +33,5 @@ class Translation extends Base
         }
         
         return '{' . $key . '}';
-    }
-
-    public function reset()
-    {
-        $this->text = array();
     }
 }

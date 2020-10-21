@@ -164,7 +164,14 @@ class Column extends Base
 
     public function getPostType() : int
     {
-        return $this->post_type; // 0 - string ; 1 - int ; 2 - files ; 3 - password ; 4 - email ; 5 - text
+        // 0 - string
+        // 1 - int
+        // 2 - files
+        // 3 - password
+        // 4 - email
+        // 5 - text
+        return $this->post_type;
+         
     }
 
     public function getType() : string

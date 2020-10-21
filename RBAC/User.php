@@ -2,8 +2,9 @@
 
 use codesaur\Base\Base;
 use codesaur\DataObject\CDO;
+use codesaur\Base\UserInterface;
 
-class User extends Base
+class User extends Base implements UserInterface
 {
     protected $conn = null; 
     protected $role = array();
@@ -60,18 +61,18 @@ class User extends Base
         return false;
     }
 
-    public function hasPrivilege(string $perm, $roleName = null)
+    public function hasPrivilege(string $permissionName, $roleName = null)
     {
         if (isset($roleName)) {
             if (isset($this->role[$roleName])) {
-                return $this->role[$roleName]->hasPermission($perm);
+                return $this->role[$roleName]->hasPermission($permissionName);
             } else {
                 return false;
             }
         }
         
         foreach ($this->role as $role) {
-            if ($role->hasPermission($perm)) {
+            if ($role->hasPermission($permissionName)) {
                 return true;
             }
         }
