@@ -3,7 +3,7 @@
 /**
  * codesaur
  *
- * An elegant object-oriented application development framework for PHP 7.1 or newer
+ * An elegant object-oriented application development framework for PHP 7.2 or newer
  *
  * @version   7
  * @package   Erketu

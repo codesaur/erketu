@@ -11,15 +11,14 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=7.2.0",
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-curl": "*",
         "ext-openssl": "*",
         "ext-mbstring": "*",
         "twig/twig": "^2.0",
-        "vlucas/phpdotenv": "^3.1",
-        "phpmailer/phpmailer": "^6.0"
+        "vlucas/phpdotenv": "^3.1"
     },
     "autoload": {
         "psr-4": {
