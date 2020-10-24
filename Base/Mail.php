@@ -21,11 +21,11 @@ class Mail extends Base
             $recipient = '=?UTF-8?B?' . \base64_encode($this->to[0]) . '?= <' . $this->to[1] . '>';            
         }
         
-        if (empty($this->message)) {
-            throw new \Exception('No message? Are u kidding? Mail message must be set!');
+        if (empty($this->subject) || empty($this->message)) {
+            throw new \Exception('No content? Are u kidding? Mail message must be set!');
         }
         
-        $content_type = \substr_count($this->message, '</') >= 1 ? 'text/html' : 'text/plain';
+        $content_type = \strpos($this->message, '</') === false ? 'text/plain' : 'text/html';
         
         $subject = '=?UTF-8?B?' . \base64_encode($this->subject) . '?=';
         
