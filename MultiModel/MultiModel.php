@@ -286,7 +286,7 @@ class MultiModel extends InitableModel
 
     public function deletes(array $columns, array $flags)
     {
-        if (\getenv('DB_KEEP_DATA') == 'true'
+        if (\getenv('DB_KEEP_DATA', true) == 'true'
                 && $this->describe->hasColumn('is_active')) {
             $result = parent::delete($columns);
             if ($result) {

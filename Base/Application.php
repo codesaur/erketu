@@ -99,7 +99,7 @@ class Application extends Base implements ApplicationInterface
     
     public function execute($class, string $action, array $args)
     {
-        if (\getenv('OUTPUT_COMPRESS') == 'true') {
+        if (\getenv('OUTPUT_COMPRESS', true) == 'true') {
             $this->response->start(array($this->response->ob, 'compress'), 0, PHP_OUTPUT_HANDLER_STDFLAGS);
         } else {
             $this->response->start();

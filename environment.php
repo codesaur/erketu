@@ -10,14 +10,14 @@ if ( ! function_exists('codesaur_environment')) {
     } catch (Exception $ex) {
         error_log($ex->getMessage());
     } finally {
-        define('DEBUG', getenv('APP_ENV') != 'production');
+        define('DEBUG', getenv('APP_ENV', true) != 'production');
     }
 
     ini_set('log_errors', 'On');
     ini_set('display_errors', DEBUG ? 'On' : 'Off');
     ini_set('error_log', "$vendor_dir/../logs/code.log");
 
-    $timezone = getenv('TIME_ZONE');
+    $timezone = getenv('TIME_ZONE', true);
     if ($timezone) {
         date_default_timezone_set($timezone);
     }

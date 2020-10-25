@@ -318,7 +318,7 @@ class Table extends Base
 
     public function delete(array $columns)
     {
-        if (\getenv('DB_KEEP_DATA') == 'true' &&
+        if (\getenv('DB_KEEP_DATA', true) == 'true' &&
                 $this->describe->hasColumn('is_active')) {
             return $this->deactivate($columns);
         }
