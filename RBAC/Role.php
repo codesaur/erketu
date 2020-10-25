@@ -4,12 +4,12 @@ use codesaur\DataObject\CDO;
 
 class Role
 {
-    protected $permissions = array();
+    public $permissions = array();
 
-    public function getPermissions($role_id, CDO $conn)
+    public function getPermissions(CDO $connection, $role_id)
     {
-        $permissions = new Permissions($conn);
-        $role_perm = new RolePermission($conn);
+        $permissions = new Permissions($connection);
+        $role_perm = new RolePermission($connection);
         
         $table1 = $role_perm->getTable();
         $table2 = $permissions->getTable();
