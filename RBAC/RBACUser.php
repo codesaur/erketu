@@ -2,7 +2,7 @@
 
 use codesaur\DataObject\CDO;
 
-class User
+class RBACUser
 {
     public $role = array();
     
@@ -35,7 +35,7 @@ class User
         $this->role = array();
         if ($pdo_stmt->rowCount()) {
             while ($row = $pdo_stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $this->role["{$row['alias']}_{$row['name']}"] = (new Role())->getPermissions($connection, $row['role_id']);
+                $this->role["{$row['alias']}_{$row['name']}"] = (new RBACRole())->getPermissions($connection, $row['role_id']);
             }
         }
         
