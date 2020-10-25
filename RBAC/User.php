@@ -2,9 +2,8 @@
 
 use codesaur\Base\Base;
 use codesaur\DataObject\CDO;
-use codesaur\Base\UserInterface;
 
-class User extends Base implements UserInterface
+class User extends Base
 {
     protected $conn = null; 
     protected $role = array();

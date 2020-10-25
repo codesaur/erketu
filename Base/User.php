@@ -9,117 +9,81 @@ class Authentication
 
 class User extends Base
 {
-    protected $data;
-    protected $auth = Authentication::Unset;
+    private $_account;
+    private $_organization;
+    private $_role_permissions;
     
-    public function login($data)
+    private $_status = Authentication::Unset;
+    
+    public function login(array $account, array $org, array $roles)
     {
-        $this->data = $data;
+        $this->_account = $account;
+        $this->_organization = $org;
+        $this->_role_permissions = $roles;       
         
-        $this->auth = Authentication::Login;
+        $this->_status = Authentication::Login;
         
-        if (isset($data['account']['id'])
-                && \is_int($data['account']['id'])) {
-            \putenv(_ACCOUNT_ID_ . "={$data['account']['id']}");
+        if (isset($this->_account['id'])
+                && \is_int($this->_account['id'])) {
+            \putenv(_ACCOUNT_ID_ . "={$this->_account['id']}");
         }
     }
 
     public function logout()
     {
-        $this->auth = Authentication::Unset;
+        $this->_status = Authentication::Unset;
     }
 
     public function lock()
     {
-        $this->auth = Authentication::Locked;
+        $this->_status = Authentication::Locked;
     }
 
     public function isLogin(): bool
     {
-        return $this->auth == Authentication::Login;
+        return $this->_status == Authentication::Login;
     }
 
     public function isLocked(): bool
     {
-        return $this->auth == Authentication::Locked;
-    }
-
-    public function notLogin(): bool
-    {
-        return ! $this->isLogin();
+        return $this->_status == Authentication::Locked;
     }
     
-    public function data() : array
+    public function account($index)
     {
-        return $this->data ?? array('rbac' => array(), 'account' => array(), 'organization' => array());
+        return $this->_account[$index] ?? null;
     }
     
-    public function has($data, $index) : bool
+    public function organization($index)
     {
-        return isset($this->data[$data][$index]);
-    }
-    
-    public function set($index, $value)
-    {
-        $this->data[$index] = $value;
-    }
-    
-    public function &account($index = null)
-    {
-        if ( ! isset($index)) {
-            return $this->data['account'];
-        }
-        
-        if ($this->has('account', $index)) {
-            return $this->data['account'][$index];
-        }
-        
-        $nulldata = null;
-        return $nulldata;
-    }
-    
-    public function &organization($index = null)
-    {
-        if ( ! isset($index)) {
-            return $this->data['organization'];
-        }
-        
-        if ($this->has('organization', $index)) {
-            return $this->data['organization'][$index];
-        }
-        
-        $nulldata = null;
-        return $nulldata;
+        return $this->_organization[$index] ?? null;
     }
     
     public function is($role) : bool
-    {
-        if ( ! $this->data['rbac'] instanceof UserInterface) {
-            return false;
-        }
-        
-        if ($this->data['rbac']->hasRole('system_coder')) {
+    {        
+        if (isset($this->_role_permissions['system_coder'])) {
             return true;
         }
         
-        return $this->data['rbac']->hasRole($role);
+        return isset($this->_role_permissions[$role]);
     }
 
     public function can($permission, $role = null) : bool
     {
-        if ( ! $this->data['rbac'] instanceof UserInterface) {
-            return false;
-        }
-        
-        if ($this->data['rbac']->hasRole('system_coder')) {
+        if (isset($this->_role_permissions['system_coder'])) {
             return true;
         }
         
-        return $this->data['rbac']->hasPrivilege($permission, $role);
-    }
-    
-    public function getAlias()
-    {
-        return $this->data['organization']['alias'] ?? null;
+        if ( ! empty($role)) {
+            return ($this->_role_permissions[$role][$permission] ?? false) == true;
+        }
+        
+        foreach ($this->_role_permissions as $role) {
+            if (isset($role[$permission])) {
+                return $role[$permission] == true;
+            }
+        }
+        
+        return false;
     }
 }

@@ -16,7 +16,6 @@ class Application extends Base implements ApplicationInterface
     public $response;
 
     public $user;
-    public $helper;
     public $session;
     public $language;
     public $translation;
@@ -39,7 +38,6 @@ class Application extends Base implements ApplicationInterface
         $this->response = new Response();
 
         $this->user = new User();
-        $this->helper = new Helper();
         $this->session = new Session();
         $this->language = new Language();
         $this->translation = new Translation();

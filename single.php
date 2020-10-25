@@ -95,11 +95,6 @@ final class codesaur
         return self::app()->user;
     }
 
-    public static function helper() : codesaur\Base\Helper
-    {
-        return self::app()->helper;
-    }
-
     public static function session() : codesaur\Globals\Session
     {
         return self::app()->session;
