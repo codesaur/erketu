@@ -8,6 +8,7 @@ use codesaur\Globals\Session;
 
 class Application extends Base implements ApplicationInterface
 {
+    private $_config;
     private $_namespace;
 
     public $request;
@@ -65,6 +66,8 @@ class Application extends Base implements ApplicationInterface
                 return $this->error('Default application not found!');
             }
         }
+        
+        $this->_config = $config;
     }
     
     public function launch()
@@ -142,6 +145,11 @@ class Application extends Base implements ApplicationInterface
     public function getNamespace()
     {
         return $this->_namespace;
+    }
+    
+    public function getConfiguraton() : ?array
+    {
+        return $this->_config;
     }
 
     public function getWebUrl(bool $relative) : string
