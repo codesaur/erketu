@@ -2,7 +2,7 @@
 
 use codesaur\DataObject\CDO;
 
-class RBACUser
+class RBACUser implements \JsonSerializable
 {
     public $role = array();
     
@@ -35,7 +35,7 @@ class RBACUser
         $this->role = array();
         if ($pdo_stmt->rowCount()) {
             while ($row = $pdo_stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $this->role["{$row['alias']}_{$row['name']}"] = (new RBACRole())->getPermissions($connection, $row['role_id']);
+                $this->role["{$row['alias']}_{$row['name']}"] = (new Role())->getPermissions($connection, $row['role_id']);
             }
         }
         
@@ -70,5 +70,24 @@ class RBACUser
         }
         
         return false;
+    }
+    
+    public function jsonSerialize()
+    {
+        $role_permissions = array();
+        
+        foreach ($this->role as $name => $role) {
+            if ( ! $role instanceof Role) {
+                continue;
+            }
+            
+            foreach ($role->permissions as $permission => $granted) {
+                if ($granted) {
+                    $role_permissions[$name][$permission] = true;
+                }
+            }
+        }
+        
+        return $role_permissions;
     }
 }

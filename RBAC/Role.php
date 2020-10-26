@@ -2,7 +2,7 @@
 
 use codesaur\DataObject\CDO;
 
-class RBACRole
+class Role
 {
     public $permissions = array();
 
