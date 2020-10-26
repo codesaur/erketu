@@ -15,19 +15,23 @@ class User extends Base
     
     private $_status = Authentication::Unset;
     
-    public function login(array $account, array $organizations, array $role_permissions)
+    public function login(array $account, array $organizations, array $role_permissions) : bool
     {
-        if (isset($this->_account['id'])
-                && \is_int($this->_account['id'])) {
-            $this->_status = Authentication::Login;
-            \putenv(_ACCOUNT_ID_ . "={$this->_account['id']}");
-        } else {
-            return;
+        if ( ! isset($account['id'])
+                || ! \is_int($account['id'])
+                || ! isset($organizations[0]['id'])) {           
+            return false;
         }
 
         $this->_account = $account;
         $this->_organizations = $organizations;
         $this->_role_permissions = $role_permissions;
+        
+         $this->_status = Authentication::Login;
+         
+        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
+        
+        return true;
     }
 
     public function logout()
