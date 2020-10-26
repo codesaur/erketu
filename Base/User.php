@@ -22,14 +22,14 @@ class User extends Base
                 || ! isset($organizations[0]['id'])) {           
             return false;
         }
+        
+        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
 
         $this->_account = $account;
         $this->_organizations = $organizations;
         $this->_role_permissions = $role_permissions;
         
-         $this->_status = Authentication::Login;
-         
-        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
+        $this->_status = Authentication::Login;
         
         return true;
     }
