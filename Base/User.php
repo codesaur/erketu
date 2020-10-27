@@ -17,21 +17,28 @@ class User extends Base
     
     public function login(array $account, array $organizations, array $role_permissions) : bool
     {
-        if ( ! isset($account['id'])
-                || ! \is_int($account['id'])
-                || ! isset($organizations[0]['id'])) {           
+        try {
+            if ( ! isset($account['id'])
+                    || ! isset($organizations[0]['id'])) {           
+                throw new \Exception('Invalid RBAC information!');
+            }
+
+            \putenv(_ACCOUNT_ID_ . "={$account['id']}");
+
+            $this->_account = $account;
+            $this->_organizations = $organizations;
+            $this->_role_permissions = $role_permissions;
+
+            $this->_status = Authentication::Login;
+
+            return true;
+        } catch (\Exception $ex) {
+            if (DEBUG) {
+                \error_log($ex->getMessage());
+            }
+            
             return false;
         }
-        
-        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
-
-        $this->_account = $account;
-        $this->_organizations = $organizations;
-        $this->_role_permissions = $role_permissions;
-        
-        $this->_status = Authentication::Login;
-        
-        return true;
     }
 
     public function logout()
