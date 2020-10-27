@@ -43,7 +43,7 @@ class Mail extends Base
         if (\mail($recipient ?? $this->to, $subject, \base64_encode($this->message), $header)) {
             return true;
         } else {
-            throw new \Exception(\error_get_last()['message']);
+            throw new \Exception(\error_get_last()['message'] ?? 'Email not sent!');
         }
     }
 }
