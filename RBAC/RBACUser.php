@@ -81,10 +81,10 @@ class RBACUser implements \JsonSerializable
                 continue;
             }
             
+            $role_permissions[$name] = array();
+            
             foreach ($role->permissions as $permission => $granted) {
-                if ($granted) {
-                    $role_permissions[$name][$permission] = true;
-                }
+                $role_permissions[$name][$permission] = $granted;
             }
         }
         
