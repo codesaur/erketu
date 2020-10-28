@@ -8,7 +8,9 @@ class RBACUser implements \JsonSerializable
     
     public function init(CDO $connection, $user_id, string $alias)
     {
-        if ( ! $connection->alive()) {
+        if ( ! $connection->alive()
+                || empty($user_id)
+                || empty($alias)) {
             return false;
         }
         
