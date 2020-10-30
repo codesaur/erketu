@@ -67,23 +67,6 @@ class Request extends Base
         return $this->_url_params;
     }
     
-    public function getParamsAsStr() : string
-    {
-        $params = '';
-        if ( ! empty($this->getParams())) {
-            foreach ($this->getParams() as $key => $value) {
-                if ($params == '') {
-                    $params .= '?';
-                } else {
-                    $params .= '&';
-                }
-                $params .= \urlencode($key) . '=' . \urlencode($value);
-            }
-        }
-        
-        return $params;
-    }
-
     public function getParam($key)
     {
         return $this->_url_params[$key] ?? null;
@@ -130,6 +113,15 @@ class Request extends Base
         return $this->_path . $this->_app;
     }
     
+    public function getQueryString() : string
+    {
+        if (empty($this->getParams())) {
+            return '';
+        } else {
+            return \http_build_query($this->getParams());
+        }
+    }
+
     public function setApp(string $alias)
     {
         $this->_app = \rtrim($alias, '/');

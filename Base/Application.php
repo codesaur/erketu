@@ -72,32 +72,32 @@ class Application extends Base implements ApplicationInterface
     
     public function launch()
     {   
-        $routing = $this->getNamespace() . 'Routing';
+        try {
+            $routing = $this->getNamespace() . 'Routing';
+            if ( ! \class_exists($routing)) {
+                throw new \Exception("$routing not found! [URL: " . ($this->request->getUrl() ?? '') . ']');
+            }
 
-        if ( ! \class_exists($routing)) {
-            return $this->error("$routing not found! [URL: " . ($this->request->getUrl() ?? '') . ']');
+            $this->route = (new $routing())->match($this->router, $this->request);
+            if ( ! isset($this->route)) {
+                throw new \Exception('Unknown route!');
+            }
+
+            $controller = $this->route->getController();
+            if ( ! \class_exists($controller)) {
+                throw new \Exception("$controller is not available!");
+            }
+
+            $action = $this->route->getAction();
+            $this->controller = new $controller();
+            if (! $this->controller->hasMethod($action)) {
+                throw new \Exception("Action named $action is not part of $controller!");
+            }
+
+            $this->execute($this->controller, $action, $this->route->getParameters()); exit;
+        } catch (\Exception $ex) {            
+            $this->error($ex->getMessage());
         }
-
-        $this->route = (new $routing())->match($this->router, $this->request);
-        
-        if ( ! isset($this->route)) {
-            return $this->error('Unknown route!');
-        }
-
-        $controller = $this->route->getController();
-
-        if ( ! \class_exists($controller)) {
-            return $this->error("$controller is not available!");
-        }
-
-        $action = $this->route->getAction();
-        
-        $this->controller = new $controller();
-        if (! $this->controller->hasMethod($action)) {
-            return $this->error("Action named $action is not part of $controller!");
-        }
-
-        $this->execute($this->controller, $action, $this->route->getParameters()); exit;
     }
     
     public function execute($class, string $action, array $args)
@@ -138,8 +138,6 @@ class Application extends Base implements ApplicationInterface
                     $status_code . '</title></head><body><h1>Error ' . $status_code . '</h1><p>' . $message .
                     '</p><hr><a href="' . $host . '">' . $host . '</a>' . ($notice ?? null) . '</body></html>';
         }
-        
-        exit;
     }
 
     public function getNamespace()

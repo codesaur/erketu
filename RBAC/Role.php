@@ -31,8 +31,8 @@ class Role
         return $this;
     }
 
-    public function hasPermission(string $permissionName)
+    public function hasPermission(string $permissionName) : bool
     {
-        return isset($this->permissions[$permissionName]);
+        return $this->permissions[$permissionName] ?? false;
     }    
 }

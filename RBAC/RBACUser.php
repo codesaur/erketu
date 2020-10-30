@@ -6,12 +6,14 @@ class RBACUser implements \JsonSerializable
 {
     public $role = array();
     
-    public function init(CDO $connection, $user_id, string $alias)
+    public function __construct(CDO $connection, $user_id, string $alias)
     {
-        if ( ! $connection->alive()
-                || empty($user_id)
-                || empty($alias)) {
-            return false;
+        if ( ! $connection->alive()) {
+            throw new \Exception(__CLASS__ . ' can\'t init. Database not connected');
+        }
+        
+        if (empty($user_id) || empty($alias)) {
+            throw new \Exception(__CLASS__ . ' can\'t init. Missing information');
         }
         
         $roles = new Roles($connection);
@@ -40,11 +42,9 @@ class RBACUser implements \JsonSerializable
                 $this->role["{$row['alias']}_{$row['name']}"] = (new Role())->getPermissions($connection, $row['role_id']);
             }
         }
-        
-        return true;
     }
 
-    public function hasRole(string $roleName)
+    public function hasRole(string $roleName) : bool
     {
         foreach (\array_keys($this->role) as $name) {
             if ($name == $roleName) {
@@ -55,7 +55,7 @@ class RBACUser implements \JsonSerializable
         return false;
     }
 
-    public function hasPrivilege(string $permissionName, $roleName = null)
+    public function hasPrivilege(string $permissionName, $roleName = null) : bool
     {
         if (isset($roleName)) {
             if (isset($this->role[$roleName])) {

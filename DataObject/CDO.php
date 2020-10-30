@@ -3,25 +3,18 @@
 class CDO extends \PDO
 {
     private $_config;
-    private $_connected;
+    private $_connected = false;
     
     function __construct(array $config)
     {
-        try {
-            parent::__construct(
-                    "{$config['driver']}:host={$config['host']}" .
-                    ";dbname={$config['name']};charset={$config['charset']}",
-                    $config['username'], $config['password'], $config['options']
-            );
-            $this->_connected = true;
-            $this->_config = $config;
-        } catch (\PDOException $e) {
-            if (DEBUG) {
-                \error_log($e->getMessage());
-            }
-            
-            $this->_connected = false;
-        }
+        parent::__construct(
+                "{$config['driver']}:host={$config['host']}" .
+                ";dbname={$config['name']};charset={$config['charset']}",
+                $config['username'], $config['password'], $config['options']
+        );
+                
+        $this->_config = $config;
+        $this->_connected = true;
     }
     
     public function alive() : bool

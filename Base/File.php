@@ -2,7 +2,6 @@
 
 class File extends Base
 {
-    private $_error = 0;
     public $handle = null;
     
     function __destruct()
@@ -159,7 +158,7 @@ class File extends Base
 
     public function upload(
             $input, string $uploadpath,
-            array $allowed = [], $overwrite = false, $sizelimit = false)
+            array $allowed = [], $overwrite = false, $sizelimit = false) : array
     {
         if (\is_array($input)) {
             $field = \current($input);
@@ -170,8 +169,7 @@ class File extends Base
         
         $size = $field ? $_FILES[$input]['size'][$field] : $_FILES[$input]['size'];
         if ($sizelimit && $size > $sizelimit) {
-            $this->_error = 3;
-            return false;
+            throw new \Exception('The file size exceeds the limit allowed and cannot be saved');
         }
         
         if ( ! $overwrite) {
@@ -181,8 +179,7 @@ class File extends Base
         }
         $ext = $this->getExt($file);
         if ( ! \in_array($ext, $allowed)) {
-            $this->_error = 2;
-            return false;
+            throw new \Exception("Unable to upload a file: This file type [$ext] is not supported");
         }
         
         if ( ! $this->exists($uploadpath) || ! $this->isDir($uploadpath)) {
@@ -191,7 +188,6 @@ class File extends Base
         
         $tmp_file = $field ? $_FILES[$input]['tmp_name'][$field] : $_FILES[$input]['tmp_name'];
         if (\move_uploaded_file($tmp_file, $uploadpath . $file)) {
-            $this->_error = 0;
             return array(
                 'dir' => $uploadpath,
                 'name' => $file,
@@ -199,10 +195,8 @@ class File extends Base
                 'size' => $size
             );
         } else {
-            $this->_error = 1; // failed to move tmp uploaded file
+            throw new \Exception('Failed to move tmp uploaded file: ' . $tmp_file);
         }
-        
-        return false;
     }
 
     public function makeDir(string $pathname, $mode = 0755, $recursive = true, $context = null) : bool
@@ -281,10 +275,5 @@ class File extends Base
         }
         
         return $dest;
-    }
-    
-    public function getLastError() : int
-    {
-        return $this->_error;
     }
 }
