@@ -2,8 +2,8 @@
 
 class Authentication
 {
-    const Unset = 0;
-    const Login = 1;
+    const Unset  = 0;
+    const Login  = 1;
     const Locked = 2;
 }
 
@@ -15,7 +15,7 @@ class User extends Base
     
     private $_status = Authentication::Unset;
     
-    public function login(array $account, array $organizations, array $rbac)
+    public function login(?array $account, ?array $organizations, ?array $rbac)
     {
         if ( ! isset($account['id'])
                 || ! isset($organizations[0]['id'])) {           
