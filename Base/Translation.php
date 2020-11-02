@@ -29,7 +29,7 @@ class Translation extends Base
         }
         
         if (DEBUG) {
-            error_log("UNTRANSLATED: $key");
+            \error_log("UNTRANSLATED: $key");
         }
         
         return '{' . $key . '}';
