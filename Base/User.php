@@ -9,26 +9,26 @@ class Authentication
 
 class User extends Base
 {
+    private $_rbac;
     private $_account;
     private $_organizations;
-    private $_role_permissions;
     
     private $_status = Authentication::Unset;
     
-    public function login(array $account, array $organizations, array $role_permissions)
+    public function login(array $account, array $organizations, array $rbac)
     {
         if ( ! isset($account['id'])
                 || ! isset($organizations[0]['id'])) {           
-            throw new \Exception('Invalid RBAC information!');
+            throw new \Exception('Invalid RBAC user information!');
         }
 
-        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
-
+        $this->_rbac = $rbac;
         $this->_account = $account;
         $this->_organizations = $organizations;
-        $this->_role_permissions = $role_permissions;
 
         $this->_status = Authentication::Login;
+        
+        \putenv(_ACCOUNT_ID_ . "={$account['id']}");
     }
 
     public function logout()
@@ -68,24 +68,24 @@ class User extends Base
 
     public function is($role) : bool
     {        
-        if (isset($this->_role_permissions['system_coder'])) {
+        if (isset($this->_rbac['system_coder'])) {
             return true;
         }
         
-        return isset($this->_role_permissions[$role]);
+        return isset($this->_rbac[$role]);
     }
 
     public function can($permission, $role = null) : bool
     {
-        if (isset($this->_role_permissions['system_coder'])) {
+        if (isset($this->_rbac['system_coder'])) {
             return true;
         }
         
         if ( ! empty($role)) {
-            return $this->_role_permissions[$role][$permission] ?? false;
+            return $this->_rbac[$role][$permission] ?? false;
         }
         
-        foreach ($this->_role_permissions as $role) {
+        foreach ($this->_rbac as $role) {
             if (isset($role[$permission])) {
                 return $role[$permission] == true;
             }
