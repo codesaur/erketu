@@ -23,11 +23,12 @@ class Request extends Base
     {
         $server = new Server();
         
-        $this->_secure = true;
         $this->_domain = $server->raw('HTTP_HOST');
-        $this->_script = \preg_replace('/\/+/', '\\1/', $server->raw('SCRIPT_NAME'));
         $this->_method = $server->raw('REQUEST_METHOD');
-        $this->_httphost = 'https://' . $this->getDomain();
+        $this->_script = \preg_replace('/\/+/', '\\1/', $server->raw('SCRIPT_NAME'));
+        $this->_secure = ( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+        
+        $this->_httphost = ($this->isSecure() ? 'https://' : 'http://') . $this->getDomain();
         
         $this->_url = \preg_replace('/\/+/', '\\1/', $server->raw('REQUEST_URI'));
         $this->_url_clean = $this->cleanUrl($this->getUrl(), $server->raw('QUERY_STRING'));

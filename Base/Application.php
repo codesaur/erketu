@@ -113,30 +113,32 @@ class Application extends Base implements ApplicationInterface
         $this->response->send();
     }
     
-    public function error(string $message, int $status_code = 404)
+    public function error(string $message, int $code = 404)
     {
         if ( ! \headers_sent()) {
-            \http_response_code($status_code);
+            \http_response_code($code);
         }
         
-        \error_log("Error[$status_code]: $message");
+        \error_log("Error[$code]: $message");
         
         try {
             $controller = $this->getNamespace() . 'ErrorController';
-            $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $status_code]);
+            $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $code]);
         } catch (\Throwable $t) {
-            $host = 'https://';
+            $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
             $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
             if (DEBUG) {
                 echo "<pre>$t</pre>";
                 $notice = "<hr><strong>Output: </strong><br/>" . \ob_get_contents();
                 \ob_end_clean();
+            } else {
+                $notice = '';
             }
 
-            echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>' . 'Error ' .
-                    $status_code . '</title></head><body><h1>Error ' . $status_code . '</h1><p>' . $message .
-                    '</p><hr><a href="' . $host . '">' . $host . '</a>' . ($notice ?? null) . '</body></html>';
+            echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Error' .
+                    " $code</title></head><body><h1>Error $code</h1><p>$message</p><hr>" .
+                    '<a href="' . $host . '">' . "$host</a>$notice</body></html>";
         }
     }
 
