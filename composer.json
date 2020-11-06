@@ -22,13 +22,13 @@
     },
     "autoload": {
         "psr-4": {
-            "codesaur\\Base\\": "Base/",
-            "codesaur\\Http\\": "Http/",
-            "codesaur\\HTML\\": "HTML/",
-            "codesaur\\RBAC\\": "RBAC/",
-            "codesaur\\Globals\\": "Globals/",
-            "codesaur\\DataObject\\": "DataObject/",
-            "codesaur\\MultiModel\\": "MultiModel/"
+            "codesaur\\Base\\": "base/",
+            "codesaur\\Http\\": "http/",
+            "codesaur\\HTML\\": "html/",
+            "codesaur\\RBAC\\": "rbac/",
+            "codesaur\\Globals\\": "globals/",
+            "codesaur\\DataObject\\": "dataobject/",
+            "codesaur\\MultiModel\\": "multimodel/"
         },
         "files": [
             "single.php",
