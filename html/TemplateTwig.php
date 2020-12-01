@@ -21,7 +21,7 @@ class TemplateTwig extends Template
         $this->addFilter('json_decode', function($data, $param = true) { return \json_decode($data, $param); });
  
         $this->addFunction('script', function($src, $attr = 'defer') {
-            return new Markup('<script ' . $attr . 'src="' . $src . '"></script>', 'UTF-8');
+            return new Markup('<script ' . $attr . ' src="' . $src . '"></script>', 'UTF-8');
         });
         
         $this->addFunction('stylesheet', function($href, $attr = null) {
