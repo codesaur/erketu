@@ -90,7 +90,7 @@ class Application extends Base implements ApplicationInterface
 
             $action = $this->route->getAction();
             $this->controller = new $controller();
-            if (! $this->controller->hasMethod($action)) {
+            if ( ! \method_exists($this->controller, $action)) {
                 throw new \Exception("Action named $action is not part of $controller!");
             }
 
