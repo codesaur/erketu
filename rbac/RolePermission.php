@@ -60,7 +60,6 @@ system_template_retrieve
 system_template_update
 system_translation_delete
 system_translation_index
-system_translation_index
 system_translation_initial
 system_translation_insert
 system_translation_retrieve
