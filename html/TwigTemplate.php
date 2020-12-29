@@ -7,7 +7,7 @@ use Twig\TwigFunction;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 
-class TemplateTwig extends Template
+class TwigTemplate extends Template
 {
     protected $twig;
     
