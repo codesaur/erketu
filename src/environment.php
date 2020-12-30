@@ -3,7 +3,7 @@
 if ( ! function_exists('codesaur_environment')) {
     error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 
-    $vendor_dir = dirname(__FILE__) . "/../..";
+    $vendor_dir = dirname(__FILE__) . '/../../..';
 
     try {
         Dotenv\Dotenv::create("$vendor_dir/..")->load();
