@@ -60,11 +60,11 @@ class Application extends Base implements ApplicationInterface
         }
 
         if ( ! isset($this->_namespace)) {
-            if (isset($config['/'])) {
-                $this->_namespace = $config['/'];
-            } else {
+            if ( ! isset($config['/'])) {
                 return $this->error('Default application not found!');
             }
+            
+            $this->_namespace = $config['/'];
         }
         
         $this->_config = $config;

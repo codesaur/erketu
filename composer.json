@@ -1,6 +1,6 @@
 {
     "name": "codesaur/erketu",
-    "description": "An elegant object-oriented application development framework for PHP 7.1 or newer",
+    "description": "An elegant object-oriented application development framework for PHP 7.2 or newer",
     "keywords": ["codesaur","mongol","mongolia","mongolian","ololt","framework","narankhuu","coden","php framework","php","кодзавр","монгол","ололт","мөнхийн","мөнхийн-ололт","мөнхийн ололт","наранхүү","коден","munkhiin ololt","ерөнхий бүтэц","фреймворк","raptor","velociraptor","indoraptor","swift seizer","mongoliensis"],
     "homepage": "https://ololt.mn/codesaur",
     "authors": [
@@ -22,17 +22,17 @@
     },
     "autoload": {
         "psr-4": {
-            "codesaur\\Base\\": "base/",
-            "codesaur\\Http\\": "http/",
-            "codesaur\\HTML\\": "html/",
-            "codesaur\\RBAC\\": "rbac/",
-            "codesaur\\Globals\\": "globals/",
-            "codesaur\\DataObject\\": "dataobject/",
-            "codesaur\\MultiModel\\": "multimodel/"
+            "codesaur\\Base\\": "src/base/",
+            "codesaur\\Http\\": "src/http/",
+            "codesaur\\HTML\\": "src/html/",
+            "codesaur\\RBAC\\": "src/rbac/",
+            "codesaur\\Globals\\": "src/globals/",
+            "codesaur\\DataObject\\": "src/dataobject/",
+            "codesaur\\MultiModel\\": "src/multimodel/"
         },
         "files": [
-            "single.php",
-            "environment.php"
+            "src/single.php",
+            "src/environment.php"
         ]
     },
     "license": "MIT",

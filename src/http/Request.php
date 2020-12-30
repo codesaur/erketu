@@ -108,6 +108,16 @@ class Request extends Base
     {
         return $this->_url_segments;
     }
+    
+    public function getBody()
+    {
+        return \file_get_contents('php://input');
+    }
+
+    public function getBodyJson(bool $assoc = false, int $depth = 512, int $options = 0)
+    {
+        return \json_decode($this->getBody(), $assoc, $depth, $options);
+    }
 
     public function getPathComplete() : string
     {
