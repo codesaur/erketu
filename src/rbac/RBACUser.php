@@ -31,10 +31,10 @@ class RBACUser implements \JsonSerializable
                 
         $sql =  'SELECT t1.role_id, t2.name, t2.alias ' .
                 "FROM $table1 as t1 JOIN $table2 as t2 ON t1.role_id = t2.id " .
-                "WHERE $organization_alias AND t1.user_id = :user_id AND t1.is_active = 1";
+                "WHERE t1.user_id = :user_id AND t1.is_active = 1";
 
         $pdo_stmt = $connection->prepare($sql);
-        $pdo_stmt->execute(array(':user_id' => $user_id, ':alias' => $alias));
+        $pdo_stmt->execute(array(':user_id' => $user_id));
         
         $this->role = array();
         if ($pdo_stmt->rowCount()) {
