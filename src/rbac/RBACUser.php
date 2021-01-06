@@ -18,20 +18,9 @@ class RBACUser implements \JsonSerializable
         
         $roles = new Roles($connection);
         $user_role = new UserRole($connection);
-        
-        $table1 = $user_role->getTable();
-        $table2 = $roles->getTable();
-        
-        $organization_alias = '(t2.alias = :alias';
-        if ($alias != 'system') {
-            $organization_alias .= " OR t2.alias = 'system')";
-        } else {
-            $organization_alias .= ')';
-        }
-                
         $sql =  'SELECT t1.role_id, t2.name, t2.alias ' .
-                "FROM $table1 as t1 JOIN $table2 as t2 ON t1.role_id = t2.id " .
-                "WHERE t1.user_id = :user_id AND t1.is_active = 1";
+                "FROM {$user_role->getTable()} as t1 JOIN {$roles->getTable()} as t2 ON t1.role_id = t2.id " .
+                'WHERE t1.user_id = :user_id AND t1.is_active = 1';
 
         $pdo_stmt = $connection->prepare($sql);
         $pdo_stmt->execute(array(':user_id' => $user_id));
