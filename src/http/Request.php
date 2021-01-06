@@ -121,7 +121,7 @@ class Request extends Base
 
     public function getPathComplete() : string
     {
-        return $this->_path . $this->_app;
+        return $this->getPath() . $this->_app;
     }
     
     public function getQueryString() : string

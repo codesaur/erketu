@@ -8,5 +8,5 @@ interface ApplicationInterface
     
     public function getNamespace();
     public function getConfiguraton();
-    public function getBaseUrl(bool $relative) : string;
+    public function getBaseUrl(bool $relative = true) : string;
 }

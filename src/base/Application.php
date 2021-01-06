@@ -47,7 +47,6 @@ class Application extends Base implements ApplicationInterface
             $url_segments = $this->request->getUrlSegments();
             if ( ! empty($url_segments)) {
                 $uri = '/' . $url_segments[0];
-
                 if (isset($config[$uri])) {
                     $request_url = $this->request->getCleanUrl();
                     $shifted = \substr($request_url, \strlen($uri));
@@ -156,7 +155,7 @@ class Application extends Base implements ApplicationInterface
         return $this->_config;
     }
 
-    public function getBaseUrl(bool $relative) : string
+    public function getBaseUrl(bool $relative = true) : string
     {
         if ($relative) {
             return $this->request->getPath();
