@@ -8,7 +8,5 @@ interface ApplicationInterface
     
     public function getNamespace();
     public function getConfiguraton();
-    public function getWebUrl(bool $relative) : string;
-    public function getPublicUrl(bool $relative = true) : string;
-    public function getResourceUrl(bool $relative = true) : string;
+    public function getBaseUrl(bool $relative) : string;
 }

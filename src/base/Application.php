@@ -26,48 +26,52 @@ class Application extends Base implements ApplicationInterface
     
     function __construct(array $config)
     {
-        if (empty($config)) {
-            return $this->error('Invalid application configuration!');
-        }
-        
-        $this->request = new Request();
-        $this->request->initFromGlobal();
-        
-        $this->router = new Router();
-        $this->header = new Header();
-        
-        $this->response = new Response();
-
-        $this->user = new User();
-        $this->session = new Session();
-        $this->language = new Language();
-        $this->translation = new Translation();
-        
-        $url_segments = $this->request->getUrlSegments();
-        if ( ! empty($url_segments)) {
-            $uri = '/' . $url_segments[0];
-            
-            if (isset($config[$uri])) {
-                $request_url = $this->request->getCleanUrl();
-                $shifted = \substr($request_url, \strlen($uri));
-
-                $this->request->setApp($uri);
-                $this->request->shiftUrlSegments();
-                $this->request->forceCleanUrl($shifted);
-
-                $this->_namespace = $config[$uri];
+        try {
+            if (empty($config)) {
+                throw new \Exception('Invalid application configuration!');
             }
-        }
 
-        if ( ! isset($this->_namespace)) {
-            if ( ! isset($config['/'])) {
-                return $this->error('Default application not found!');
+            $this->request = new Request();
+            $this->request->initFromGlobal();
+
+            $this->router = new Router();
+            $this->header = new Header();
+
+            $this->response = new Response();
+
+            $this->user = new User();
+            $this->session = new Session();
+            $this->language = new Language();
+            $this->translation = new Translation();
+
+            $url_segments = $this->request->getUrlSegments();
+            if ( ! empty($url_segments)) {
+                $uri = '/' . $url_segments[0];
+
+                if (isset($config[$uri])) {
+                    $request_url = $this->request->getCleanUrl();
+                    $shifted = \substr($request_url, \strlen($uri));
+
+                    $this->request->setApp($uri);
+                    $this->request->shiftUrlSegments();
+                    $this->request->forceCleanUrl($shifted);
+
+                    $this->_namespace = $config[$uri];
+                }
             }
-            
-            $this->_namespace = $config['/'];
+
+            if ( ! isset($this->_namespace)) {
+                if ( ! isset($config['/'])) {
+                    throw new \Exception('Default application not found!');
+                }
+
+                $this->_namespace = $config['/'];
+            }
+
+            $this->_config = $config;
+        } catch (\Exception $ex) {
+            $this->error($ex->getMessage());
         }
-        
-        $this->_config = $config;
     }
     
     public function launch()
@@ -152,22 +156,12 @@ class Application extends Base implements ApplicationInterface
         return $this->_config;
     }
 
-    public function getWebUrl(bool $relative) : string
+    public function getBaseUrl(bool $relative) : string
     {
         if ($relative) {
             return $this->request->getPath();
         }
         
         return $this->request->getHttpHost() . $this->request->getPath();
-    }
-    
-    public function getPublicUrl(bool $relative = true) : string
-    {
-        return $this->getWebUrl($relative) . '/public';
-    }
-
-    public function getResourceUrl(bool $relative = true) : string
-    {
-        return $this->getWebUrl($relative) . '/resource';
     }
 }
