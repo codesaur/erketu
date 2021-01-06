@@ -10,12 +10,8 @@ class Role
     {
         $permissions = new Permissions($connection);
         $role_perm = new RolePermission($connection);
-        
-        $table1 = $role_perm->getTable();
-        $table2 = $permissions->getTable();
-        
-        $sql =  "SELECT t2.name, t2.alias FROM $table1 as t1 " .
-                "JOIN $table2 as t2 ON t1.permission_id = t2.id " .
+        $sql =  "SELECT t2.name, t2.alias FROM {$role_perm->getTable()} as t1 " .
+                "JOIN {$permissions->getTable()} as t2 ON t1.permission_id = t2.id " .
                 'WHERE t1.role_id = :role_id AND t1.is_active = 1';
                 
         $pdo_stmt = $role_perm->dataobject()->prepare($sql);
