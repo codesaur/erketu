@@ -57,11 +57,6 @@ final class codesaur
         return self::response()->ob;
     }
 
-    public static function route() : ?codesaur\Http\Route
-    {
-        return self::app()->route ?? null;
-    }
-
     public static function controller()
     {
         return self::app()->controller ?? null;
