@@ -5,32 +5,43 @@ use codesaur\Base\OutputBuffer;
 
 class Response extends Base
 {
-    public $ob;
+    public $_header;
+    public $_output;
     
     public function __construct()
     {
-        $this->ob = new OutputBuffer();
+        $this->_header = new Header();
+        $this->_output = new OutputBuffer();
     }
     
-    public function start(callable $output_callback = null, int $chunk_size = 0, int $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
+    public function &getBuffer() : OutputBuffer
     {
-        $this->ob->start($output_callback, $chunk_size, $erase);
+        return $this->_output;
     }
 
-    public function send()
+    public function &getHeader() : Header
     {
-        $this->ob->endFlush();
+        return $this->_header;
+    }
+
+    public function header($content)
+    {
+        $this->getHeader()->send($content);
     }
     
-    public function end()
+    public function redirect(string $url, int $status = 302)
     {
-        $this->ob->end();
+        if ($this->getHeader()->send($status)) {
+            $this->getHeader()->send("Location: $url");
+        } else {
+            return null;
+        }
     }
-
+    
     public function json($data, bool $isapp = true, bool $header = true)
     {
         if ($header) {
-            \header('Content-Type: ' . ($isapp ? 'application' : 'text') . '/json');
+            $this->header('Content-Type: ' . ($isapp ? 'application' : 'text') . '/json');
         }
         
         echo \json_encode($data);

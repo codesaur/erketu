@@ -1,3 +1,5 @@
+<link rel="icon" href="{{ app.getBaseUrl() }}/favicon.ico" type="image/png">
+
 <style>
 @import 'https://fonts.googleapis.com/css?family=Inconsolata';
 
@@ -117,6 +119,6 @@ a::after {
 <div class="terminal">
   <h1>Hello <span class="errorcode">{{ user }}</span></h1>
   <p class="output">{{ message }}</p>
-  <p class="output">Please visit to <a href="https://github.com/codesaur">github</a> for more information{% if user is defined and user is not empty %} or <a href="{{ 'home'|link }}">return to the homepage</a>{% endif %}.</p>
+  <p class="output">Please visit to <a href="https://github.com/codesaur">github</a> for more information{% if user is defined and user is not empty %} or <a href="{{ app.getBaseUrl(false) }}">return to the homepage</a>{% endif %}.</p>
   <p class="output">Good luck.</p>
 </div>

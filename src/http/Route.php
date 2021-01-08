@@ -5,7 +5,9 @@ use codesaur\Base\Base;
 class Route extends Base
 {
     private $_pattern;
-
+    
+    private $_callback;
+    
     private $_action;
     private $_controller;
     
@@ -20,14 +22,9 @@ class Route extends Base
     
     public function setPattern(string $path)
     {
-        $this->_pattern = $path;
+        $this->_pattern = \rtrim($path, '/');
     }
     
-    public function getName() : ?string
-    {
-        return $this->name ?? null;
-    }
-
     public function getController() : string
     {
         return $this->_controller;
@@ -108,5 +105,20 @@ class Route extends Base
         
         $this->setAction($action ?? 'index');
         $this->setController($controller);
+    }
+    
+    public function setCallback(callable $callback)
+    {
+        $this->_callback = $callback;
+    }
+    
+    public function getCallback()
+    {
+        return $this->_callback;
+    }
+    
+    public function isCallable() : bool
+    {
+        return isset($this->_callback) && \is_callable($this->_callback);
     }
 }

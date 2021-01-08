@@ -9,7 +9,6 @@ class Request extends Base
     private $_secure;
     private $_method;
     private $_httphost;
-    private $_app = '';
 
     private $_url;
     private $_path;
@@ -17,6 +16,7 @@ class Request extends Base
 
     private $_url_clean;
     private $_url_segments;
+    private $_url_app_segment = '';
     private $_url_params = array();
     
     public function initFromGlobal()
@@ -32,8 +32,9 @@ class Request extends Base
         
         $this->_url = \preg_replace('/\/+/', '\\1/', $server->raw('REQUEST_URI'));
         $this->_url_clean = $this->cleanUrl($this->getUrl(), $server->raw('QUERY_STRING'));
-        $this->_url_segments = \explode('/', $this->getCleanUrl());        
-        $this->shiftUrlSegments();
+        
+        $url_segments = \explode('/', $this->getCleanUrl());
+        $this->_url_segments = \array_shift($url_segments);
         
         $this->_path = \preg_replace('/\/+/', '\\1/', \str_replace('/' . \basename($this->getScript()), '', $this->getScript()));
     }
@@ -121,7 +122,7 @@ class Request extends Base
 
     public function getPathComplete() : string
     {
-        return $this->getPath() . $this->_app;
+        return $this->getPath() . $this->_url_app_segment;
     }
     
     public function getQueryString() : string
@@ -133,12 +134,30 @@ class Request extends Base
         }
     }
 
-    public function setApp(string $alias)
+    public function shiftAppSegment(string $path)
     {
-        $this->_app = \rtrim($alias, '/');
+        $this->_url_app_segment = \rtrim($path, '/');        
+        $this->_url_clean = \substr($this->_url_clean, \strlen($path));
+        
+        \array_shift($this->_url_segments);
+    }
+    
+    public function recursionParams(string $key, $value)
+    {
+        if (empty($value)) {
+            return;
+        }
+        
+        if (\is_array($value)) {
+            foreach ($value as $subkey => $subvalue) {
+                $this->recursionParams($key . "[$subkey]", $subvalue);
+            }
+        } else {
+            $this->_url_params[\urldecode($key)] = \urldecode($value);
+        }
     }
 
-    public function cleanUrl(string $url, string $query_string) : string
+    function cleanUrl(string $url, string $query_string) : string
     {
         $dir_name = \dirname($this->getScript());
         
@@ -161,30 +180,5 @@ class Request extends Base
         }
         
         return \rtrim($url, '/');
-    }
-
-    public function forceCleanUrl(string $url)
-    {
-        $this->_url_clean = $url;
-    }
-
-    public function recursionParams(string $key, $value)
-    {
-        if (empty($value)) {
-            return;
-        }
-        
-        if (\is_array($value)) {
-            foreach ($value as $subkey => $subvalue) {
-                $this->recursionParams($key . "[$subkey]", $subvalue);
-            }
-        } else {
-            $this->_url_params[\urldecode($key)] = \urldecode($value);
-        }
-    }
-    
-    public function shiftUrlSegments()
-    {
-        \array_shift($this->_url_segments);
     }
 }

@@ -16,93 +16,87 @@
  *            Erketu represent one of the first sauropods described from the Bayan Shireh Formation. The elongated cervical vertebrae of Erketu seemsto indicate that it was the sauropod with the longest neck relative to its body size.
  */
 
+use codesaur\Base\User;
+use codesaur\Http\Request;
+use codesaur\Http\Response;
+use codesaur\Base\Language;
+use codesaur\Globals\Session;
+use codesaur\Base\Translation;
+use codesaur\Base\Application;
+
 final class codesaur
 {
-    private static $_application;
+    private static $_app;
+    private static $_request;
+    private static $_response;
+    private static $_user;
+    private static $_session;
+    private static $_language;
+    private static $_translation;
+    
+    public static function __initRequestResponse()
+    {
+        self::$_request = new Request();
+        self::$_request->initFromGlobal();
+        self::$_response = new Response();
+    }
+    
+    public static function start(Application $app)
+    {
+        self::$_app = $app;
+        
+        self::$_user = new User();
+        self::$_session = new Session();
+        self::$_language = new Language();
+        self::$_translation = new Translation();
 
-    public static function start(codesaur\Base\Application $app)
-    {
-        self::$_application = $app;
-
-        self::app()->launch();
+        self::app()->handle(self::$_request, self::$_response);
     }
     
-    public static function app() : codesaur\Base\Application
+    public static function app() : Application
     {
-        return self::$_application;
-    }
-
-    public static function request() : codesaur\Http\Request
-    {
-        return self::app()->request;
-    }
-    
-    public static function router() : codesaur\Http\Router
-    {
-        return self::app()->router;
-    }
-    
-    public static function header() : codesaur\Http\Header
-    {
-        return self::app()->header;
-    }
-    
-    public static function response() : codesaur\Http\Response
-    {
-        return self::app()->response;
-    }
-    
-    public static function buffer() : codesaur\Base\OutputBuffer
-    {
-        return self::response()->ob;
+        return self::$_app;
     }
 
-    public static function controller()
+    public static function request() : Request
     {
-        return self::app()->controller ?? null;
+        return self::$_request;
+    }
+    
+    public static function &response() : Response
+    {
+        return self::$_response;
+    }
+
+    public static function user() : User
+    {
+        return self::$_user;
+    }
+
+    public static function session() : Session
+    {
+        return self::$_session;
+    }
+
+    public static function language() : Language
+    {
+        return self::$_language;
+    }
+    
+    public static function translation() : Translation
+    {
+        return self::$_translation;
     }
     
     public static function link(string $route, array $params = []) : string
     {
-        $url = self::router()->generate($route, $params);
+        $url = self::app()->getRouter()->generate($route, $params);
 
         if (empty($url)) {
             return 'javascript:;';
         }
 
         return self::request()->getPathComplete() . $url[0];
-    }
-
-    public static function redirect(string $route, array $params = [])
-    {
-        if ( ! self::router()->check($route)) {
-            self::app()->error("Can't redirect to invalid route [$route]!");
-        }
-
-        $url = self::request()->getPathComplete();
-        $url .= self::router()->generate($route, $params)[0];
-        
-        self::header()->redirect($url);
-    }
-
-    public static function user() : codesaur\Base\User
-    {
-        return self::app()->user;
-    }
-
-    public static function session() : codesaur\Globals\Session
-    {
-        return self::app()->session;
-    }
-
-    public static function language() : codesaur\Base\Language
-    {
-        return self::app()->language;
-    }
-    
-    public static function translation() : codesaur\Base\Translation
-    {
-        return self::app()->translation;
     }
 
     public static function text($key) : string
@@ -142,5 +136,7 @@ final class codesaur
         return 'Narankhuu N, codesaur@gmail.com, +976 99000287, Munkhiin Ololt LLC';
     }
 }
+
+codesaur::__initRequestResponse();
 
 set_error_handler('\codesaur::error');

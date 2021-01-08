@@ -1,166 +1,165 @@
 <?php namespace codesaur\Base;
 
-use codesaur\Http\Header;
 use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
-use codesaur\Globals\Session;
+use codesaur\Http\Controller;
 
 class Application extends Base implements ApplicationInterface
 {
-    private $_config;
+    private $_router;
+    private $_base_url;
+    private $_base_path;
     private $_namespace;
-
-    public $request;
-    public $router;
-    public $header;
-    public $response;
-
-    public $user;
-    public $session;
-    public $language;
-    public $translation;
+    private $_controller;
     
-    public $route;
-    public $controller;
-    
-    function __construct(array $config)
+    function __construct(string $namespace)
     {
-        try {
-            if (empty($config)) {
-                throw new \Exception('Invalid application configuration!');
-            }
-
-            $this->request = new Request();
-            $this->request->initFromGlobal();
-
-            $this->router = new Router();
-            $this->header = new Header();
-
-            $this->response = new Response();
-
-            $this->user = new User();
-            $this->session = new Session();
-            $this->language = new Language();
-            $this->translation = new Translation();
-
-            $url_segments = $this->request->getUrlSegments();
-            if ( ! empty($url_segments)) {
-                $uri = '/' . $url_segments[0];
-                if (isset($config[$uri])) {
-                    $request_url = $this->request->getCleanUrl();
-                    $shifted = \substr($request_url, \strlen($uri));
-
-                    $this->request->setApp($uri);
-                    $this->request->shiftUrlSegments();
-                    $this->request->forceCleanUrl($shifted);
-
-                    $this->_namespace = $config[$uri];
-                }
-            }
-
-            if ( ! isset($this->_namespace)) {
-                if ( ! isset($config['/'])) {
-                    throw new \Exception('Default application not found!');
-                }
-
-                $this->_namespace = $config['/'];
-            }
-
-            $this->_config = $config;
-        } catch (\Exception $ex) {
-            $this->error($ex->getMessage());
-        }
+        $this->_router = new Router();
+        $this->_namespace = $namespace;
     }
     
-    public function launch()
-    {   
+    public function handle(Request &$request, Response &$response)
+    {
         try {
-            $routing = $this->getNamespace() . 'Routing';
-            if ( ! \class_exists($routing)) {
-                throw new \Exception("$routing not found! [URL: " . ($this->request->getUrl() ?? '') . ']');
+            if (\getenv('OUTPUT_COMPRESS', true) == 'true') {
+                $response->getBuffer()->startCompress();
+            } else {
+                $response->getBuffer()->start();
             }
+            
+            $this->_base_path = $request->getPath();
+            $this->_base_url = $request->getHttpHost() . $this->_base_path;
 
-            $this->route = (new $routing())->match($this->router, $this->request);
-            if ( ! isset($this->route)) {
+            $route = $this->getRouter()->match($request->getCleanUrl(), $request->getMethod());
+            if ( ! isset($route)) {
                 throw new \Exception('Unknown route!');
             }
+            
+            if ($route->isCallable()) {
+                $callback = $route->getCallback();
+            } else {
+                $controller = $route->getController();
+                if ( ! \class_exists($controller)) {
+                    throw new \Exception("$controller is not available!");
+                }
 
-            $controller = $this->route->getController();
-            if ( ! \class_exists($controller)) {
-                throw new \Exception("$controller is not available!");
+                $action = $route->getAction();
+                $this->_controller = new $controller();
+                if ( ! \method_exists($this->getController(), $action)) {
+                    throw new \Exception("Action named $action is not part of $controller!");
+                }
+                
+                $callback = array($this->getController(), $action);
             }
 
-            $action = $this->route->getAction();
-            $this->controller = new $controller();
-            if ( ! \method_exists($this->controller, $action)) {
-                throw new \Exception("Action named $action is not part of $controller!");
-            }
-
-            $this->execute($this->controller, $action, $this->route->getParameters()); exit;
-        } catch (\Exception $ex) {            
-            $this->error($ex->getMessage());
+            $this->callFuncArray($callback, $route->getParameters());        
+        } catch (\Throwable $t) {
+            $this->error($t->getMessage(), 404, $t);
+        } finally {
+            $response->getBuffer()->endFlush();
         }
     }
     
-    public function execute($class, string $action, array $args)
-    {
-        if (\getenv('OUTPUT_COMPRESS', true) == 'true') {
-            $this->response->start(array($this->response->ob, 'compress'), 0, PHP_OUTPUT_HANDLER_STDFLAGS);
-        } else {
-            $this->response->start();
-        }
-        
-        $this->callFuncArray(array($class, $action), $args);
-        
-        $this->response->send();
-    }
-    
-    public function error(string $message, int $code = 404)
+    public function error(string $message, int $status = 404, \Throwable $t = null)
     {
         if ( ! \headers_sent()) {
-            \http_response_code($code);
+            \http_response_code($status);
         }
         
-        \error_log("Error[$code]: $message");
+        \error_log("Error[$status]: $message");
         
         try {
-            $controller = $this->getNamespace() . 'ErrorController';
-            $this->execute(new $controller(), 'error', ['error' => $message, 'status' => $code]);
-        } catch (\Throwable $t) {
-            $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+            $errorController = $this->getNamespace() . 'ErrorController';
+            if ( ! \class_exists($errorController)) {
+                throw new \Exception('using basic error handler!');
+            }
+            $this->callFuncArray(array(new $errorController(), 'error'),
+                    array('message' => $message, 'code' => $status, 'Throwable' => $t));
+        } catch (\Exception $ex) {
+            $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                    || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
             $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-            if (DEBUG) {
+            if (DEBUG && ! empty($t)) {
+                \ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
+
                 echo "<pre>$t</pre>";
-                $notice = "<hr><strong>Output: </strong><br/>" . \ob_get_contents();
+
+                $notice = '<hr><strong>Output: </strong><br/>';
+                $notice .= \ob_get_contents();
+
                 \ob_end_clean();
             } else {
                 $notice = '';
             }
 
-            echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Error' .
-                    " $code</title></head><body><h1>Error $code</h1><p>$message</p><hr>" .
-                    '<a href="' . $host . '">' . "$host</a>$notice</body></html>";
+            echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
+                    "<title>Error $status</title></head><body><h1>Error $status</h1>" .
+                    "<p>$message</p><hr><a href=\"$host\">$host</a>$notice</body></html>";
+            
+            if (DEBUG) {
+                \error_log($ex->getMessage());
+            }
         }
     }
-
+    
+    public function route(string $path, $target, array $args = array())
+    {
+        try {
+            $this->_router->map($path, $target, $args);
+        } catch (\Exception $ex) {
+            die($this->error($ex->getMessage()));
+        }
+    }
+    
+    public function any(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
+    }
+    
+    public function get(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('GET'));
+    }
+    
+    public function post(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('POST'));
+    }
+    
+    public function put(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('PUT'));
+    }
+    
+    public function patch(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('PATCH'));
+    }
+    
+    public function delete(string $path, callable $callback, string $name = null)
+    {
+        $this->_router->mapCallback($path, $callback, $name, array('DELETE'));
+    }
+    
     public function getNamespace()
     {
         return $this->_namespace;
     }
-    
-    public function getConfiguraton() : ?array
+
+    public function getBaseUrl(bool $absolute = true) : string
     {
-        return $this->_config;
+        return $absolute ? $this->_base_url : $this->_base_path;
     }
 
-    public function getBaseUrl(bool $relative = true) : string
+    public function &getRouter() : Router
     {
-        if ($relative) {
-            return $this->request->getPath();
-        }
-        
-        return $this->request->getHttpHost() . $this->request->getPath();
+        return $this->_router;
+    }
+
+    public function getController() : ?Controller
+    {
+        return $this->_controller ?? null;
     }
 }

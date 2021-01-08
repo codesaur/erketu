@@ -6,41 +6,60 @@ class Router extends Base
 {
     private $_routes = array();
     
-    public function map(string $routeUrl, string $target, array $args)
+    private function addRouteArgs($route, $args)
+    {
+        if ( ! empty($args['methods'])) {
+            $route->setMethods($args['methods']);
+        }
+        
+        if ( ! empty($args['filters'])) {
+            $route->setFilters($args['filters']);
+        }
+        
+        if ( ! empty($args['name'])) {
+            if ($this->check($args['name']) && DEBUG) {
+                \error_log("Route named [{$args['name']}] is found and replaced!");
+            }
+            $this->_routes[$args['name']] = $route;
+        } else {
+            $this->_routes[] = $route;
+        }
+    }
+    
+    public function map(string $path, string $target, array $args)
     {
         $route = new Route();
         $route->setControllerAction($target);
         
         if (empty($route->getController()) ||
                 \ctype_space($route->getController())) {
-            return;
+            throw new \Exception("Invalid route target for pattern: $path");
         }
 
-        $route->setPattern($routeUrl);
-
-        if (isset($args['methods'])) {
-            $methods = \explode(',', $args['methods']);
-            $route->setMethods($methods);
-        }
+        $route->setPattern($path);
         
-        if (isset($args['filters'])) {
-            $route->setFilters($args['filters']);
-        }
-        
-         if (isset($args['name'])) {
-            if ( ! $this->check($args['name'])) {
-                $this->_routes[$args['name']] = $route;
-            } else {
-                $this->_routes[$args['name'] . '-' . \count($this->_routes)] = $route;
-            }
-        } else {
-            $this->_routes[] = $route;
-        }
+        $this->addRouteArgs($route, $args);
     }
     
-    public function match(string $cleanedUrl, string $method)
+    public function mapCallback(string $path, callable $callback, $name, array $methods)
     {
-        foreach ($this->_routes as $name_or_index => $route) {
+        $route = new Route();
+        $route->setPattern($path);
+        $route->setCallback($callback);
+        
+        $args = array('name' => $name, 'methods' => $methods, 'filters' => array());
+        
+        \preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $argumentKeys);
+        foreach ($argumentKeys[1] as $name) {
+            $args['filters'][$name] = '(\w+)';
+        }
+        
+        $this->addRouteArgs($route, $args);
+    }
+    
+    public function match(string $cleanedUrl, string $method) : ?Route
+    {
+        foreach ($this->_routes as $route) {
             if ( ! \in_array($method, $route->getMethods())) {
                 continue;
             }
@@ -51,13 +70,11 @@ class Router extends Base
             
             $params = [];
             if (\preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $argumentKeys)) {
-                $argumentKeys = $argumentKeys[1];
-                
-                if (\count($argumentKeys) !== (\count($matches) - 1)) {
+                if (\count($argumentKeys[1]) !== (\count($matches) - 1)) {
                     continue;
                 }
                 
-                foreach ($argumentKeys as $key => $name) {
+                foreach ($argumentKeys[1] as $key => $name) {
                     if (isset($matches[$key + 1])) {
                         $params[$name] = $matches[$key + 1];
                     }
@@ -65,12 +82,10 @@ class Router extends Base
             }
             $route->setParameters($params);
             
-            $route->name = $name_or_index;
-            
             return $route;
         }
         
-        if ($cleanedUrl == '/' . __FUNCTION__) {
+        if ($cleanedUrl == '/codesaur/' . __FUNCTION__) {
             die($this->getMe());
         }
         
@@ -94,8 +109,7 @@ class Router extends Base
             $paramKeys = array();
             $url = $route->getPattern();
             if ($params && \preg_match_all('/:(\w+)/', $url, $paramKeys)) {
-                $paramKeys = $paramKeys[1];
-                foreach ($paramKeys as $key) {
+                foreach ($paramKeys[1] as $key) {
                     if (isset($params[$key])) {
                         $url = \preg_replace('/:(\w+)/', $params[$key], $url, 1);
                     }

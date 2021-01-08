@@ -70,8 +70,12 @@ abstract class Base
         return null;
     }
     
-    public function isCallable($method) : bool
+    public function isMethodCallable($method) : bool
     {
+        if ( ! $this->hasMethod($method)) {
+            return false;
+        }
+        
         return \is_callable(array($this->getMe(), $method));
     }
 

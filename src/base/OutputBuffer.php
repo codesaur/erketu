@@ -2,10 +2,20 @@
 
 class OutputBuffer extends Base
 {
-    public function start($output_callback = null, $chunk_size = 0, $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
+    public function start($chunk_size = 0, $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
+    {
+        $this->startCallback(null, $chunk_size, $erase);
+    }
+    
+    public function startCallback($output_callback, $chunk_size, $erase)
     {
         \ob_start($output_callback, $chunk_size, $erase);
-    }    
+    }
+    
+    public function startCompress($chunk_size = 0, $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
+    {
+        $this->startCallback(array($this, 'compress'), $chunk_size, $erase);
+    }
     
     public function end()
     {
@@ -30,7 +40,8 @@ class OutputBuffer extends Base
     {
         if ( ! \ob_get_level()) {
             return null;
-        }        
+        }
+        
         return \ob_get_contents();
     }
     
