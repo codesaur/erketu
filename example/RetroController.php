@@ -32,7 +32,7 @@ class RetroController extends Controller
         // RETRO PAGE - Hacker themed page
         $template = new TwigTemplate(
                 \dirname(__FILE__) . '/retro.html',
-                array('app' => single::app(), 'message' => 'Welcome to codesaur test application.'));
+                array('app' => single::app(), 'message' => 'Welcome to codesaur example application.'));
         
         $template->addFilter('link', function($string, $params = []) { return single::link($string, $params); });
         
