@@ -34,21 +34,21 @@ final class codesaur
     private static $_language;
     private static $_translation;
     
-    public static function __initRequestResponse()
+    public static function __initComponents()
     {
         self::$_request = new Request();
         self::$_request->initFromGlobal();
         self::$_response = new Response();
-    }
-    
-    public static function start(Application $app)
-    {
-        self::$_app = $app;
         
         self::$_user = new User();
         self::$_session = new Session();
         self::$_language = new Language();
         self::$_translation = new Translation();
+    }
+    
+    public static function start(Application $app)
+    {
+        self::$_app = $app;
 
         self::app()->handle(self::$_request, self::$_response);
     }
@@ -137,6 +137,6 @@ final class codesaur
     }
 }
 
-codesaur::__initRequestResponse();
+codesaur::__initComponents();
 
 set_error_handler('\codesaur::error');
