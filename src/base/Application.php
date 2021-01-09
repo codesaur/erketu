@@ -72,7 +72,7 @@ class Application extends Base implements ApplicationInterface
         $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
         if (DEBUG && ! empty($t)) {
-            \ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
+            \ob_start();
 
             echo "<pre>$t</pre>";
 
