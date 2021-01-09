@@ -34,7 +34,8 @@ class Request extends Base
         $this->_url_clean = $this->cleanUrl($this->getUrl(), $server->raw('QUERY_STRING'));
         
         $url_segments = \explode('/', $this->getCleanUrl());
-        $this->_url_segments = \array_shift($url_segments);
+        \array_shift($url_segments);
+        $this->_url_segments = $url_segments;
         
         $this->_path = \preg_replace('/\/+/', '\\1/', \str_replace('/' . \basename($this->getScript()), '', $this->getScript()));
     }
