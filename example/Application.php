@@ -8,11 +8,11 @@ class Application extends \codesaur\Base\Application
     {
         parent::__construct();
         
-        $this->route('/', "erketu\\Example\RetroController");
+        $this->route('/', 'erketu\\Example\\RetroController');
 
-        $this->route('/hello/:firstname', "hello@erketu\\Example\\RetroController", ['name' => 'hello', 'filters' => ['firstname' => '(\w+)']]);
+        $this->route('/hello/:firstname', 'hello@erketu\\Example\\RetroController', ['name' => 'hello', 'filters' => ['firstname' => '(\w+)']]);
 
-        $this->route('/post-or-put', "erketu\\Example\\RetroController", ['methods' => ['POST', 'PUT']]);
+        $this->route('/post-or-put', 'erketu\\Example\\RetroController', ['methods' => ['POST', 'PUT']]);
 
         $this->any('/home', function() { (new RetroController())->index(); });
 
