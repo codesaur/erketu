@@ -11,7 +11,7 @@ class RetroController extends Controller
         $this->getTemplate()->render();
     }
     
-    public function hello(string $firstname, $lastname = null)
+    public function hello(string $firstname, ?string $lastname = null)
     {
         $template = $this->getTemplate();
         

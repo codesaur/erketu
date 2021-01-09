@@ -41,7 +41,7 @@ class Router extends Base
         $this->addRouteArgs($route, $args);
     }
     
-    public function mapCallback(string $path, callable $callback, $name, array $methods)
+    public function mapCallback(string $path, callable $callback, ?string $name, array $methods)
     {
         $route = new Route();
         $route->setPattern($path);

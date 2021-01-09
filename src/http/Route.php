@@ -119,6 +119,6 @@ class Route extends Base
     
     public function isCallable() : bool
     {
-        return isset($this->_callback) && \is_callable($this->_callback);
+        return isset($this->_callback);
     }
 }

@@ -113,32 +113,32 @@ class Application extends Base implements ApplicationInterface
         }
     }
     
-    public function any(string $path, callable $callback, string $name = null)
+    public function any(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
     }
     
-    public function get(string $path, callable $callback, string $name = null)
+    public function get(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('GET'));
     }
     
-    public function post(string $path, callable $callback, string $name = null)
+    public function post(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('POST'));
     }
     
-    public function put(string $path, callable $callback, string $name = null)
+    public function put(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('PUT'));
     }
     
-    public function patch(string $path, callable $callback, string $name = null)
+    public function patch(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('PATCH'));
     }
     
-    public function delete(string $path, callable $callback, string $name = null)
+    public function delete(string $path, callable $callback, ?string $name = null)
     {
         $this->_router->mapCallback($path, $callback, $name, array('DELETE'));
     }
