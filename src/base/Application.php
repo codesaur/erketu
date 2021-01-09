@@ -10,13 +10,11 @@ class Application extends Base implements ApplicationInterface
     private $_router;
     private $_base_url;
     private $_base_path;
-    private $_namespace;
     private $_controller;
     
-    function __construct(string $namespace)
+    function __construct()
     {
         $this->_router = new Router();
-        $this->_namespace = $namespace;
     }
     
     public function handle(Request &$request, Response &$response)
@@ -69,39 +67,25 @@ class Application extends Base implements ApplicationInterface
         
         \error_log("Error[$status]: $message");
         
-        try {
-            $errorController = $this->getNamespace() . 'ErrorController';
-            if ( ! \class_exists($errorController)) {
-                throw new \Exception('using basic error handler!');
-            }
-            $this->callFuncArray(array(new $errorController(), 'error'),
-                    array('message' => $message, 'code' => $status, 'Throwable' => $t));
-        } catch (\Exception $ex) {
-            $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-                    || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
-            $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+        $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-            if (DEBUG && ! empty($t)) {
-                \ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
+        if (DEBUG && ! empty($t)) {
+            \ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
 
-                echo "<pre>$t</pre>";
+            echo "<pre>$t</pre>";
 
-                $notice = '<hr><strong>Output: </strong><br/>';
-                $notice .= \ob_get_contents();
+            $notice = '<hr><strong>Output: </strong><br/>';
+            $notice .= \ob_get_contents();
 
-                \ob_end_clean();
-            } else {
-                $notice = '';
-            }
-
-            echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
-                    "<title>Error $status</title></head><body><h1>Error $status</h1>" .
-                    "<p>$message</p><hr><a href=\"$host\">$host</a>$notice</body></html>";
-            
-            if (DEBUG) {
-                \error_log($ex->getMessage());
-            }
+            \ob_end_clean();
         }
+
+        echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
+                "<title>Error $status</title></head><body><h1>Error $status</h1>" .
+                "<p>$message</p><hr><a href=\"$host\">$host</a>" . ($notice ?? '') .
+                '</body></html>';
     }
     
     public function route(string $path, $target, array $args = array())
@@ -142,16 +126,6 @@ class Application extends Base implements ApplicationInterface
     {
         $this->_router->mapCallback($path, $callback, $name, array('DELETE'));
     }
-    
-    public function getNamespace()
-    {
-        return $this->_namespace;
-    }
-
-    public function getBaseUrl(bool $absolute = true) : string
-    {
-        return $absolute ? $this->_base_url : $this->_base_path;
-    }
 
     public function &getRouter() : Router
     {
@@ -161,5 +135,10 @@ class Application extends Base implements ApplicationInterface
     public function getController() : ?Controller
     {
         return $this->_controller ?? null;
+    }
+
+    public function getBaseUrl(bool $absolute = true) : string
+    {
+        return $absolute ? $this->_base_url : $this->_base_path;
     }
 }

@@ -12,8 +12,7 @@ interface ApplicationInterface
     
     public function route(string $path, string $target, array $args = array());
     
-    public function getNamespace();
-    public function getBaseUrl(bool $relative = true) : string;
     public function getRouter() : Router;
     public function getController() : ?Controller;
+    public function getBaseUrl(bool $relative = true) : string;
 }

@@ -1,4 +1,4 @@
-<?php namespace My\Test\App;
+<?php namespace erketu\Example;
 
 use codesaur as single;
 use codesaur\Http\Controller;
