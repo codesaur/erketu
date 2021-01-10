@@ -1,6 +1,7 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
+use codesaur\HTML\Template;
 use codesaur\Base\OutputBuffer;
 
 class Response extends Base
@@ -12,6 +13,17 @@ class Response extends Base
     {
         $this->_header = new Header();
         $this->_output = new OutputBuffer();
+        
+        if (\getenv('OUTPUT_COMPRESS', true) == 'true') {
+            $this->getBuffer()->startCompress();
+        } else {
+            $this->getBuffer()->start();
+        }
+    }
+    
+    function __destruct()
+    {
+        $this->getBuffer()->endFlush();
     }
     
     public function &getBuffer() : OutputBuffer
@@ -47,7 +59,16 @@ class Response extends Base
         echo \json_encode($data);
     }
     
-    public function error(string $message, int $status = 404, \Throwable $t = null)
+    public function render($content)
+    {
+        if ($content instanceof Template) {
+            $content->render();
+        } else {
+            echo $content;
+        }
+    }
+    
+    public function error(string $message, int $status = 404)
     {
         if ( ! \headers_sent()) {
             \http_response_code($status);
@@ -59,20 +80,8 @@ class Response extends Base
                 || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
         $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-        if (DEBUG && ! empty($t)) {
-            \ob_start();
-
-            echo "<pre>$t</pre>";
-
-            $notice = '<hr><strong>Output: </strong><br/>';
-            $notice .= \ob_get_contents();
-
-            \ob_end_clean();
-        }
-
         echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
                 "<title>Error $status</title></head><body><h1>Error $status</h1>" .
-                "<p>$message</p><hr><a href=\"$host\">$host</a>" . ($notice ?? '') .
-                '</body></html>';
+                "<p>$message</p><hr><a href=\"$host\">$host</a></body></html>";
     }
 }

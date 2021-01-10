@@ -26,7 +26,7 @@ class Router extends Base
         }
     }
     
-    public function map(string $path, string $target, array $args)
+    public function map(string $path, string $target, array $args = array())
     {
         $route = new Route();
         $route->setControllerAction($target);

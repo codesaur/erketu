@@ -104,7 +104,7 @@ class Route extends Base
         }
         
         $this->setAction($action ?? 'index');
-        $this->setController($controller);
+        $this->setController($controller ?? 'DefaultController');
     }
     
     public function setCallback(callable $callback)

@@ -6,13 +6,9 @@ use codesaur\Http\Response;
 
 interface ApplicationInterface
 {
-    public function handle();
+    public function handle(Request $request, Response $response);
     
     public function &router() : Router;
-    public function &request() : Request;
-    public function &response() : Response;
-    
-    public function map(string $path, string $target, array $args = array());
     
     public function any(string $path, callable $callback, ?string $name = null);
     public function get(string $path, callable $callback, ?string $name = null);

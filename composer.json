@@ -17,7 +17,6 @@
         "ext-curl": "*",
         "ext-openssl": "*",
         "ext-mbstring": "*",
-        "twig/twig": "^2.0",
         "vlucas/phpdotenv": "^3.1"
     },
     "autoload": {

@@ -1,30 +1,27 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
-use codesaur\Base\Application;
 
 class Controller extends Base
 {
-    private $_application;
+    private $_request;
+    private $_response;
     
-    function __construct(Application $app)
+    function __construct(
+            Request $request, Response $response)
     {
-        $this->_application = $app;
+        $this->_request = $request;
+        $this->_response = $response;
     }
     
-    public function &app() : Application
+    public function request() : Request
     {
-        return $this->_application;
+        return $this->_request;
     }
     
-    public function &request() : Request
+    public function response() : Response
     {
-        return $this->app()->request();
-    }
-    
-    public function &response() : Response
-    {
-        return $this->app()->response();
+        return $this->_response;
     }
 
     public function getNick() : string

@@ -7,27 +7,46 @@
 
 use codesaur\Http\Request;
 use codesaur\Http\Response;
-use codesaur\HTML\Template;
+use codesaur\Base\Application;
+
+use erketu\Example\RetroTemplate;
+use erketu\Example\ExampleResponse;
 
 $autoload = require_once '../vendor/autoload.php';
 $autoload->addPsr4('erketu\\Example\\', \dirname(__FILE__));
 
-class ExampleResponse extends Response
-{
-    public function error(string $message, int $status = 404, \Throwable $t = null)
-    {
-        if ( ! \headers_sent()) {
-            \http_response_code($status);
-        }
-        
-        \error_log("Error[$status]: $message");
-        
-        // credits to template
-        // Author: Tibix
-        // August 27, 2019
-        // NEON - 404 PAGE NOT FOUND
-        (new Template(\dirname(__FILE__) . '/neon.html', array('message' => $message)))->render();
-    }
-}
+$application = new Application();
 
-(new erketu\Example\Application(new Request(), new ExampleResponse()))->handle();
+$application->router()->map('/', 'erketu\\Example\\ExampleController');
+
+$application->router()->map('/hello/:firstname', 'hello@erketu\\Example\\ExampleController', ['filters' => ['firstname' => '(\w+)']]);
+
+$application->router()->map('/post-or-put', 'post_put@erketu\\Example\\ExampleController', ['methods' => ['POST', 'PUT']]);
+
+$application->any('/home', function()
+{
+    (new RetroTemplate())->render();
+});
+
+$application->get('/hello/:firstname/:lastname', function($req, $res) 
+{
+    $res->render(new RetroTemplate("{$req->params->firstname} {$req->params->lastname}"));
+});
+
+$application->post('/hello/post', function(Request $req, Response $res)
+{
+    $payload = $req->getBodyJson();
+
+    if (empty($payload->firstname)) {
+        return $res->error('Invalid request!');
+    }
+
+    $template = new RetroTemplate($payload->firstname);
+    if ( ! empty($payload->lastname)) {
+        $template->enhance('user', " $payload->lastname");
+    }
+
+    $res->render($template);
+});
+
+$application->handle(new Request(), new ExampleResponse());

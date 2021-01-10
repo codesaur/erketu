@@ -22,6 +22,7 @@ class Request extends Base
     private $_url_app_segment = '';
     private $_url_params = array();
     
+    private $_body;
     public $params;
     
     private $_user;
@@ -47,6 +48,8 @@ class Request extends Base
         $this->_url_segments = $url_segments;
         
         $this->_path = \preg_replace('/\/+/', '\\1/', \str_replace('/' . \basename($this->getScript()), '', $this->getScript()));
+        
+        $this->setBody(\file_get_contents('php://input'));
         
         $this->_user = new User();
         $this->_session = new Session();
@@ -148,14 +151,19 @@ class Request extends Base
         return $this->_url_segments;
     }
     
+    public function setBody($body)
+    {
+        $this->_body = $body;
+    }
+    
     public function getBody()
     {
-        return \file_get_contents('php://input');
+        return $this->_body;
     }
 
     public function getBodyJson(bool $assoc = false, int $depth = 512, int $options = 0)
     {
-        return \json_decode($this->getBody(), $assoc, $depth, $options);
+        return \json_decode($this->_body, $assoc, $depth, $options);
     }
 
     public function getPathComplete() : string
