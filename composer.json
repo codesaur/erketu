@@ -31,8 +31,7 @@
             "codesaur\\MultiModel\\": "src/multimodel/"
         },
         "files": [
-            "src/single.php",
-            "src/environment.php"
+            "src/codesaur.php"
         ]
     },
     "license": "MIT",

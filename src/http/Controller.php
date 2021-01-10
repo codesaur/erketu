@@ -1,29 +1,34 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
+use codesaur\Base\Application;
 
 class Controller extends Base
 {
+    private $_application;
+    
+    function __construct(Application $app)
+    {
+        $this->_application = $app;
+    }
+    
+    public function &app() : Application
+    {
+        return $this->_application;
+    }
+    
+    public function &request() : Request
+    {
+        return $this->app()->request();
+    }
+    
+    public function &response() : Response
+    {
+        return $this->app()->response();
+    }
+
     public function getNick() : string
     {
         return \str_replace($this->getMeClean(__CLASS__), '', $this->getMeClean());
-    }
-    
-    final public function vardump($var, bool $full = true)
-    {
-        if ( ! DEBUG) {
-            return;
-        }
-        
-        $debug = \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-        \var_dump(['file' => $debug[0]['file'] ?? '', 'line' => $debug[0]['line'] ?? '']);
-
-        if ($full) {
-            \var_dump($var);
-        } elseif (\is_array($var)) {
-            \print_r($var);
-        } else {
-            echo $var;
-        }
     }
 }

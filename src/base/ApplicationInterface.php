@@ -3,16 +3,21 @@
 use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
-use codesaur\Http\Controller;
 
 interface ApplicationInterface
 {
-    public function handle(Request &$request, Response &$response); 
-    public function error(string $message, int $status_code = 404, \Throwable $t = null);
+    public function handle();
     
-    public function route(string $path, string $target, array $args = array());
+    public function &router() : Router;
+    public function &request() : Request;
+    public function &response() : Response;
     
-    public function getRouter() : Router;
-    public function getController() : ?Controller;
-    public function getBaseUrl(bool $relative = true) : string;
+    public function map(string $path, string $target, array $args = array());
+    
+    public function any(string $path, callable $callback, ?string $name = null);
+    public function get(string $path, callable $callback, ?string $name = null);
+    public function post(string $path, callable $callback, ?string $name = null);
+    public function put(string $path, callable $callback, ?string $name = null);
+    public function patch(string $path, callable $callback, ?string $name = null);
+    public function delete(string $path, callable $callback, ?string $name = null);
 }

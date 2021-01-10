@@ -1,42 +1,41 @@
 <?php namespace erketu\Example;
 
-use codesaur as single;
+use codesaur\Http\Request;
+use codesaur\Http\Response;
 
 class Application extends \codesaur\Base\Application
 {
-    public function __construct()
+    public function __construct(
+            Request $request, Response $response)
     {
-        parent::__construct();
+        parent::__construct($request, $response);
         
-        $this->route('/', 'erketu\\Example\\RetroController');
+        $this->map('/', 'erketu\\Example\\RetroController', ['name' => 'index']);
 
-        $this->route('/hello/:firstname', 'hello@erketu\\Example\\RetroController', ['name' => 'hello', 'filters' => ['firstname' => '(\w+)']]);
+        $this->map('/hello/:firstname', 'hello@erketu\\Example\\RetroController', ['name' => 'hello', 'filters' => ['firstname' => '(\w+)']]);
 
-        $this->route('/post-or-put', 'erketu\\Example\\RetroController', ['methods' => ['POST', 'PUT']]);
+        $this->map('/post-or-put', 'erketu\\Example\\RetroController', ['methods' => ['POST', 'PUT']]);
 
-        $this->any('/home', function() { (new RetroController())->index(); });
-
-        $this->get('/hello/:firstname/:lastname', function($firstname, $lastname) 
+        $this->any('/home', function(Request $req, Response $res)
         {
-           $controller = new RetroController();
-           $controller->hello($firstname, $lastname);
+            (new RetroController($this))->index();
         });
 
-        $this->post('/hello/post', function()
+        $this->get('/hello/:firstname/:lastname', function(Request $req, Response $res) 
         {
-            $payload = single::request()->getBodyJson();
+           $controller = new RetroController($this);
+           $controller->hello($req->params->firstname, $req->params->lastname);
+        });
+
+        $this->post('/hello/post', function(Request $req, Response $res)
+        {
+            $payload = $req->getBodyJson();
 
             if (empty($payload->firstname)) {
-                return single::app()->error('Invalid request!');
+                return $res->error('Invalid request!');
             }
 
-            (new RetroController())->hello($payload->firstname, $payload->lastname ?? '');
+            (new RetroController($this))->hello($payload->firstname, $payload->lastname ?? '');
         });
-    }
-    
-    public function error(string $message, int $status = 404, \Throwable $t = null)
-    {
-        $controller = new ErrorController();
-        $controller->error($message, $status);
     }
 }

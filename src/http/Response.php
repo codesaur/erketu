@@ -46,4 +46,33 @@ class Response extends Base
         
         echo \json_encode($data);
     }
+    
+    public function error(string $message, int $status = 404, \Throwable $t = null)
+    {
+        if ( ! \headers_sent()) {
+            \http_response_code($status);
+        }
+        
+        \error_log("Error[$status]: $message");
+        
+        $host = (( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+        $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        if (DEBUG && ! empty($t)) {
+            \ob_start();
+
+            echo "<pre>$t</pre>";
+
+            $notice = '<hr><strong>Output: </strong><br/>';
+            $notice .= \ob_get_contents();
+
+            \ob_end_clean();
+        }
+
+        echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
+                "<title>Error $status</title></head><body><h1>Error $status</h1>" .
+                "<p>$message</p><hr><a href=\"$host\">$host</a>" . ($notice ?? '') .
+                '</body></html>';
+    }
 }

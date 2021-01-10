@@ -1,7 +1,10 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
+use codesaur\Base\User;
+use codesaur\Base\Language;
 use codesaur\Globals\Server;
+use codesaur\Globals\Session;
 
 class Request extends Base
 {
@@ -19,7 +22,13 @@ class Request extends Base
     private $_url_app_segment = '';
     private $_url_params = array();
     
-    public function initFromGlobal()
+    public $params;
+    
+    private $_user;
+    private $_session;
+    private $_language;
+    
+    function __construct()
     {
         $server = new Server();
         
@@ -38,6 +47,25 @@ class Request extends Base
         $this->_url_segments = $url_segments;
         
         $this->_path = \preg_replace('/\/+/', '\\1/', \str_replace('/' . \basename($this->getScript()), '', $this->getScript()));
+        
+        $this->_user = new User();
+        $this->_session = new Session();
+        $this->_language = new Language();
+    }
+    
+    public function &user() : User
+    {
+        return $this->_user;
+    }
+    
+    public function &session() : Session
+    {
+        return $this->_session;
+    }
+    
+    public function &language() : Language
+    {
+        return $this->_language;
     }
 
     public function isSecure() : bool
@@ -64,25 +92,34 @@ class Request extends Base
     {
         return $this->_url_clean;
     }
+    
+    public function setParams(array $params)
+    {
+        $this->params = new \stdClass();
         
-    public function getParams() : array
+        foreach ($params as $key => $value) {
+            $this->params->$key = $value;
+        }
+    }
+        
+    public function getUrlParams() : array
     {
         return $this->_url_params;
     }
     
-    public function getParam($key)
+    public function getUrlParam($key)
     {
         return $this->_url_params[$key] ?? null;
     }
 
-    public function hasParam($key) : bool
+    public function hasUrlParam($key) : bool
     {
         return \in_array($key, \array_keys($this->_url_params));
     }
     
-    public function addParam($key, $value)
+    public function addUrlParam($key, $value)
     {
-        if ($this->hasParam($key)) {
+        if ($this->hasUrlParam($key)) {
             return false;
         }
         
@@ -128,10 +165,10 @@ class Request extends Base
     
     public function getQueryString() : string
     {
-        if (empty($this->getParams())) {
+        if (empty($this->getUrlParams())) {
             return '';
         } else {
-            return \http_build_query($this->getParams());
+            return \http_build_query($this->getUrlParams());
         }
     }
 
@@ -143,7 +180,7 @@ class Request extends Base
         \array_shift($this->_url_segments);
     }
     
-    public function recursionParams(string $key, $value)
+    function recursionUrlParams(string $key, $value)
     {
         if (empty($value)) {
             return;
@@ -151,7 +188,7 @@ class Request extends Base
         
         if (\is_array($value)) {
             foreach ($value as $subkey => $subvalue) {
-                $this->recursionParams($key . "[$subkey]", $subvalue);
+                $this->recursionUrlParams($key . "[$subkey]", $subvalue);
             }
         } else {
             $this->_url_params[\urldecode($key)] = \urldecode($value);
@@ -171,7 +208,7 @@ class Request extends Base
             $params = [];
             \parse_str($query_string, $params);
             foreach ($params as $key => $value) {
-                $this->recursionParams($key, $value);
+                $this->recursionUrlParams($key, $value);
             }
         }
       

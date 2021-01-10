@@ -1,6 +1,5 @@
 <?php namespace erketu\Example;
 
-use codesaur as single;
 use codesaur\Http\Controller;
 use codesaur\HTML\TwigTemplate;
 
@@ -32,9 +31,20 @@ class RetroController extends Controller
         // RETRO PAGE - Hacker themed page
         $template = new TwigTemplate(
                 \dirname(__FILE__) . '/retro.html',
-                array('app' => single::app(), 'message' => 'Welcome to codesaur example application.'));
+                array('request' => $this->request()));
         
-        $template->addFilter('link', function($string, $params = []) { return single::link($string, $params); });
+        $template->set('message', 'Welcome to codesaur example application.');
+        
+        $template->addFilter('link', function($name, $params = [])
+        {
+            $url = $this->app()->router()->generate($name, $params);
+
+            if (empty($url)) {
+                return 'javascript:;';
+            }
+
+            return $this->request()->getPathComplete() . $url[0];
+        });
         
         return $template;
     }
