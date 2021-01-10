@@ -2,7 +2,6 @@
 
 use codesaur\Base\Base;
 use codesaur\Base\User;
-use codesaur\Base\Language;
 use codesaur\Globals\Server;
 use codesaur\Globals\Session;
 
@@ -27,7 +26,6 @@ class Request extends Base
     
     private $_user;
     private $_session;
-    private $_language;
     
     function __construct()
     {
@@ -53,7 +51,6 @@ class Request extends Base
         
         $this->_user = new User();
         $this->_session = new Session();
-        $this->_language = new Language();
     }
     
     public function &user() : User
@@ -64,11 +61,6 @@ class Request extends Base
     public function &session() : Session
     {
         return $this->_session;
-    }
-    
-    public function &language() : Language
-    {
-        return $this->_language;
     }
 
     public function isSecure() : bool

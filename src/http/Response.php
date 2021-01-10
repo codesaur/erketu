@@ -2,12 +2,17 @@
 
 use codesaur\Base\Base;
 use codesaur\HTML\Template;
+use codesaur\Base\Language;
+use codesaur\Base\Translation;
 use codesaur\Base\OutputBuffer;
 
 class Response extends Base
 {
-    public $_header;
-    public $_output;
+    private $_header;
+    private $_output;
+    
+    private $_language;
+    private $_translation;
     
     public function __construct()
     {
@@ -19,6 +24,9 @@ class Response extends Base
         } else {
             $this->getBuffer()->start();
         }
+        
+        $this->_language = new Language();
+        $this->_translation = new Translation();
     }
     
     function __destruct()
@@ -34,6 +42,16 @@ class Response extends Base
     public function &getHeader() : Header
     {
         return $this->_header;
+    }
+    
+    public function &language() : Language
+    {
+        return $this->_language;
+    }
+    
+    public function &translation() : Translation
+    {
+        return $this->_translation;
     }
 
     public function header($content)
