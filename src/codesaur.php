@@ -1,5 +1,21 @@
 <?php version_compare(PHP_VERSION, '7.2', '>=') || die('codesaur need PHP 7.2 or newer.');
 
+/**
+ * codesaur
+ *
+ * An elegant object-oriented application development framework for PHP 7.2 or newer
+ *
+ * @version   9
+ * @package   Erketu
+ * @author    Narankhuu N <codesaur@gmail.com>, +976 99000287
+ * @copyright Copyright (c) 2012 - 2021. Munkhiin Ololt LLC. +976 99000287, contact@ololt.mn, https://ololt.mn
+ *
+ * @creature  Erketu (meaning "Erketü Tengri -> creator-god" / монголоор "Эрхэт тэнгэр") is a genus of somphospondylan sauropod dinosaur
+ *            that lived in Asia during the Late Cretaceous roughly between 102 million and 86 million years ago. Its fossils were found in Mongolia
+ *            between 2002 and 2003 during a field expedition and first described in 2006; later on in 2010 due to some cervicals that were left behind in the expedition.
+ *            Erketu represent one of the first sauropods described from the Bayan Shireh Formation. The elongated cervical vertebrae of Erketu seemsto indicate that it was the sauropod with the longest neck relative to its body size.
+ */
+
 if ( ! function_exists('codesaur_error_log')) {
     function codesaur_error_log($errno, $errstr, $errfile, $errline)
     {
