@@ -69,6 +69,9 @@ if ( ! function_exists('codesaur_environment')) {
     }
     
     define('_ACCOUNT_ID_', 'CODESAUR_ACCOUNT_ID');
+    
+    define('CODESAUR_FRAMEWORK', 'codesaur - framework');
+    define('CODESAUR_AUTHOR', 'Narankhuu N, codesaur@gmail.com, +976 99000287, Munkhiin Ololt LLC');
 } else {
     codesaur_environment();
 }
