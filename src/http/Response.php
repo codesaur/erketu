@@ -56,29 +56,29 @@ class Response extends Base
 
     public function header($content)
     {
-        $this->getHeader()->send($content);
+        return $this->getHeader()->send($content);
     }
     
     public function redirect(string $url, int $status = 302)
     {
-        if ($this->getHeader()->send($status)) {
-            $this->getHeader()->send("Location: $url");
+        if ($this->header($status)) {
+            $this->header("Location: $url");
         } else {
             return null;
         }
     }
     
-    public function json($data, bool $isapp = true, bool $header = true)
+    public function json($data, bool $isapp = true)
     {
-        if ($header) {
-            $this->header('Content-Type: ' . ($isapp ? 'application' : 'text') . '/json');
-        }
+        $this->header('Content-Type: ' . ($isapp ? 'application' : 'text') . '/json');
         
         echo \json_encode($data);
     }
     
     public function render($content, int $status = 200)
     {
+        $this->header($status);
+        
         if ($content instanceof Template) {
             $content->render();
         } else {
@@ -88,9 +88,7 @@ class Response extends Base
     
     public function error(string $message, int $status = 404)
     {
-        if ( ! \headers_sent()) {
-            \http_response_code($status);
-        }
+        $this->header($status);
         
         \error_log("Error[$status]: $message");
         
