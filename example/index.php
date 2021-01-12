@@ -18,6 +18,8 @@ $autoload->addPsr4('erketu\\Example\\', \dirname(__FILE__));
 
 $application = new Application();
 
+$application->map('/', 'erketu\\Example\\ExampleController');
+
 $application->merge(new ExampleRouter());
 
 $application->any('/home', function()
