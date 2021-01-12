@@ -7,8 +7,7 @@ class Controller extends Base
     private $_request;
     private $_response;
     
-    function __construct(
-            Request $request, Response $response)
+    function __construct(Request $request, Response $response)
     {
         $this->_request = $request;
         $this->_response = $response;
