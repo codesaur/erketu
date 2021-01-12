@@ -4,7 +4,7 @@ use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
 
-class Application extends Base implements ApplicationInterface
+class Application extends Base
 {
     private $_router;
     
@@ -16,6 +16,46 @@ class Application extends Base implements ApplicationInterface
     public function &router() : Router
     {
         return $this->_router;
+    }
+    
+    public function map(string $path, string $target, array $args = array())
+    {
+        $this->router()->map($path, $target, $args);
+    }
+    
+    public function merge(Router $router)
+    {
+        $this->router()->merge($router);
+    }
+    
+    public function any(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->any($path, $callback, $name);
+    }
+    
+    public function get(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->get($path, $callback, $name);
+    }
+    
+    public function post(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->post($path, $callback, $name);
+    }
+    
+    public function put(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->put($path, $callback, $name);
+    }
+    
+    public function patch(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->patch($path, $callback, $name);
+    }
+    
+    public function delete(string $path, callable $callback, ?string $name = null)
+    {
+        $this->router()->delete($path, $callback, $name);
     }
     
     public function handle(Request $request, Response $response)
@@ -47,35 +87,5 @@ class Application extends Base implements ApplicationInterface
         } catch (\Exception $ex) {
             $response->error($ex->getMessage(), 404);
         }
-    }
-    
-    public function any(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
-    }
-    
-    public function get(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('GET'));
-    }
-    
-    public function post(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('POST'));
-    }
-    
-    public function put(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('PUT'));
-    }
-    
-    public function patch(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('PATCH'));
-    }
-    
-    public function delete(string $path, callable $callback, ?string $name = null)
-    {
-        $this->router()->mapCallback($path, $callback, $name, array('DELETE'));
     }
 }

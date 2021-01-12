@@ -6,7 +6,32 @@ class Router extends Base
 {
     private $_routes = array();
     
-    private function addRouteArgs($route, $args)
+    public function map(string $path, string $target, array $args = array())
+    {
+        $route = new Route();
+        $route->setPattern($path);
+        $route->setControllerAction($target);
+        
+        $this->mapRoute($route, $args);
+    }
+    
+    public function mapCallback(string $path, callable $callback, ?string $name, array $methods)
+    {
+        $route = new Route();
+        $route->setPattern($path);
+        $route->setCallback($callback);
+        
+        $args = array('name' => $name, 'methods' => $methods, 'filters' => array());
+        
+        \preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $argumentKeys);
+        foreach ($argumentKeys[1] as $name) {
+            $args['filters'][$name] = '(\w+)';
+        }
+        
+        $this->mapRoute($route, $args);
+    }
+    
+    public function mapRoute($route, $args)
     {
         if ( ! empty($args['methods'])) {
             $route->setMethods($args['methods']);
@@ -24,37 +49,6 @@ class Router extends Base
         } else {
             $this->_routes[] = $route;
         }
-    }
-    
-    public function map(string $path, string $target, array $args = array())
-    {
-        $route = new Route();
-        $route->setControllerAction($target);
-        
-        if (empty($route->getController()) ||
-                \ctype_space($route->getController())) {
-            throw new \Exception("Invalid route target for pattern: $path");
-        }
-
-        $route->setPattern($path);
-        
-        $this->addRouteArgs($route, $args);
-    }
-    
-    public function mapCallback(string $path, callable $callback, ?string $name, array $methods)
-    {
-        $route = new Route();
-        $route->setPattern($path);
-        $route->setCallback($callback);
-        
-        $args = array('name' => $name, 'methods' => $methods, 'filters' => array());
-        
-        \preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $argumentKeys);
-        foreach ($argumentKeys[1] as $name) {
-            $args['filters'][$name] = '(\w+)';
-        }
-        
-        $this->addRouteArgs($route, $args);
     }
     
     public function match(string $cleanedUrl, string $method) : ?Route
@@ -124,5 +118,45 @@ class Router extends Base
             
             return array();
         }
+    }
+    
+    public function getRoutes() : array
+    {
+        return $this->_routes;
+    }
+    
+    public function merge(Router $router)
+    {
+        $this->_routes = \array_merge($this->_routes, $router->getRoutes());
+    }
+    
+    public function any(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
+    }
+    
+    public function get(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('GET'));
+    }
+    
+    public function post(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('POST'));
+    }
+    
+    public function put(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('PUT'));
+    }
+    
+    public function patch(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('PATCH'));
+    }
+    
+    public function delete(string $path, callable $callback, ?string $name = null)
+    {
+        $this->mapCallback($path, $callback, $name, array('DELETE'));
     }
 }

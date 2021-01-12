@@ -9,6 +9,7 @@ use codesaur\Http\Request;
 use codesaur\Http\Response;
 use codesaur\Base\Application;
 
+use erketu\Example\ExampleRouter;
 use erketu\Example\RetroTemplate;
 use erketu\Example\ExampleResponse;
 
@@ -17,11 +18,7 @@ $autoload->addPsr4('erketu\\Example\\', \dirname(__FILE__));
 
 $application = new Application();
 
-$application->router()->map('/', 'erketu\\Example\\ExampleController');
-
-$application->router()->map('/hello/:firstname', 'hello@erketu\\Example\\ExampleController', ['filters' => ['firstname' => '(\w+)']]);
-
-$application->router()->map('/post-or-put', 'post_put@erketu\\Example\\ExampleController', ['methods' => ['POST', 'PUT']]);
+$application->merge(new ExampleRouter());
 
 $application->any('/home', function()
 {
