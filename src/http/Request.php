@@ -27,7 +27,7 @@ class Request extends Base
     private $_user;
     private $_session;
     
-    function __construct()
+    public function initFromGlobal()
     {
         $server = new Server();
         
@@ -51,6 +51,8 @@ class Request extends Base
         
         $this->_user = new User();
         $this->_session = new Session();
+        
+        return $this;
     }
     
     public function &user() : User
@@ -143,6 +145,11 @@ class Request extends Base
         return $this->_url_segments;
     }
     
+    public function getAppSegment() : string
+    {
+        return $this->_url_app_segment;
+    }
+    
     public function setBody($body)
     {
         $this->_body = $body;
@@ -218,5 +225,38 @@ class Request extends Base
         }
         
         return \rtrim($url, '/');
+    }
+    
+    public function getUserCopy() : User
+    {
+        return $this->_user;
+    }
+    
+    public function getSessionCopy() : Session
+    {
+        return $this->_session;
+    }
+    
+    public function clone(Request $request)
+    {
+        $this->_domain = $request->getDomain();
+        $this->_secure = $request->isSecure();
+        $this->_method = $request->getMethod();
+        $this->_httphost = $request->getHttpHost();
+
+        $this->_url = $request->getUrl();
+        $this->_path = $request->getPath();
+        $this->_script = $request->getScript();
+
+        $this->_url_clean = $request->getCleanUrl();
+        $this->_url_segments = $request->getUrlSegments();
+        $this->_url_app_segment = $request->getAppSegment();
+        $this->_url_params = $request->getUrlParams();
+
+        $this->params = $request->params;
+        $this->_body = $request->getBody();
+
+        $this->_user = $request->getUserCopy();
+        $this->_session = $request->getSessionCopy();
     }
 }
