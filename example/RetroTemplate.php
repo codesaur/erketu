@@ -2,11 +2,6 @@
 
 use codesaur\HTML\Template;
 
-// credits to html template
-// Author: Robin Selmer
-// August 22, 2017
-// RETRO PAGE - Hacker themed page
-
 class RetroTemplate extends Template
 {
     function __construct($user = null)

@@ -13,10 +13,6 @@ class ExampleResponse extends Response
         
         \error_log("Error[$status]: $message");
         
-        // credits to html template
-        // Author: Tibix
-        // August 27, 2019
-        // NEON - 404 PAGE NOT FOUND
         (new Template(\dirname(__FILE__) . '/neon.html', array('message' => $message)))->render();
     }
 }
