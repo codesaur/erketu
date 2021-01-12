@@ -96,8 +96,8 @@ class Response extends Base
                 || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
         $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-        echo    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
+        die(    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
                 "<title>Error $status</title></head><body><h1>Error $status</h1>" .
-                "<p>$message</p><hr><a href=\"$host\">$host</a></body></html>";
+                "<p>$message</p><hr><a href=\"$host\">$host</a></body></html>");
     }
 }
