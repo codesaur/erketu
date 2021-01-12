@@ -51,6 +51,11 @@ class Router extends Base
         }
     }
     
+    public function check(string $routeName) : bool
+    {
+         return isset($this->_routes[$routeName]);
+    }
+    
     public function match(string $cleanedUrl, string $method) : ?Route
     {
         foreach ($this->_routes as $route) {
@@ -86,11 +91,6 @@ class Router extends Base
         return null;
     }
     
-    public function check(string $routeName) : bool
-    {
-         return isset($this->_routes[$routeName]);
-    }
-    
     public function generate(string $routeName, array $params) : array
     {
         try {
@@ -118,11 +118,6 @@ class Router extends Base
             
             return array();
         }
-    }
-    
-    public function getRoutes() : array
-    {
-        return $this->_routes;
     }
     
     public function merge(Router $router)
@@ -158,5 +153,10 @@ class Router extends Base
     public function delete(string $path, callable $callback, ?string $name = null)
     {
         $this->mapCallback($path, $callback, $name, array('DELETE'));
+    }
+    
+    public function getRoutes() : array
+    {
+        return $this->_routes;
     }
 }
