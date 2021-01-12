@@ -48,4 +48,4 @@ $application->post('/hello/post', function(Request $req, Response $res)
     $res->render($template);
 });
 
-$application->handle(new Request(), new ExampleResponse());
+$application->handle((new Request())->initFromGlobal(), new ExampleResponse());
