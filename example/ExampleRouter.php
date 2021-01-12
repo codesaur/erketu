@@ -10,9 +10,6 @@ class ExampleRouter extends Router
         $this->map('/post-or-put', 'post_put@erketu\\Example\\ExampleController', ['methods' => ['POST', 'PUT']]);
         $this->map('/hello/:firstname', 'hello@erketu\\Example\\ExampleController', ['filters' => ['firstname' => '(\w+)']]);
         
-        $this->any('/echo/:singleword', function($req)
-        {
-            echo $req->params->singleword;
-        });
+        $this->any('/echo/:singleword', function($req) { echo $req->params->singleword; });
     }
 }
