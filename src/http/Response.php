@@ -77,7 +77,7 @@ class Response extends Base
         echo \json_encode($data);
     }
     
-    public function render($content)
+    public function render($content, int $status = 200)
     {
         if ($content instanceof Template) {
             $content->render();
