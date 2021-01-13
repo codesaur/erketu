@@ -48,4 +48,4 @@ $application->post('/hello/post', function(Request $req, Response $res)
     $res->render(new RetroTemplate($user));
 });
 
-$application->handle((new Request())->initFromGlobal(), new ExampleResponse());
+$application->handle(new Request(), new ExampleResponse());

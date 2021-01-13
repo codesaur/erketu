@@ -22,7 +22,7 @@ class Request extends Base
     private $_body;
     public $params;
     
-    public function initFromGlobal()
+    function __construct()
     {
         $server = new Server();
         
@@ -205,25 +205,5 @@ class Request extends Base
         }
         
         return \rtrim($url, '/');
-    }
-    
-    public function clone(Request $request)
-    {
-        $this->_domain = $request->getDomain();
-        $this->_secure = $request->isSecure();
-        $this->_method = $request->getMethod();
-        $this->_httphost = $request->getHttpHost();
-
-        $this->_url = $request->getUrl();
-        $this->_path = $request->getPath();
-        $this->_script = $request->getScript();
-
-        $this->_url_clean = $request->getCleanUrl();
-        $this->_url_segments = $request->getUrlSegments();
-        $this->_url_app_segment = $request->getAppSegment();
-        $this->_url_params = $request->getUrlParams();
-
-        $this->params = $request->params;
-        $this->_body = $request->getBody();
     }
 }
