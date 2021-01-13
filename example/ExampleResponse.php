@@ -1,7 +1,7 @@
 <?php namespace erketu\Example;
 
 use codesaur\Http\Response;
-use codesaur\HTML\Template;
+use codesaur\HTML\FileTemplate;
 
 class ExampleResponse extends Response
 {
@@ -13,6 +13,6 @@ class ExampleResponse extends Response
         
         \error_log("Error[$status]: $message");
         
-        (new Template(\dirname(__FILE__) . '/neon.html', array('message' => $message)))->render();
+        (new FileTemplate(\dirname(__FILE__) . '/neon.html', array('message' => $message)))->render();
     }
 }

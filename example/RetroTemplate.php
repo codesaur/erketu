@@ -1,8 +1,8 @@
 <?php namespace erketu\Example;
 
-use codesaur\HTML\Template;
+use codesaur\HTML\FileTemplate;
 
-class RetroTemplate extends Template
+class RetroTemplate extends FileTemplate
 {
     function __construct($user = null)
     {

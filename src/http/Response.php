@@ -1,7 +1,7 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
-use codesaur\HTML\Template;
+use codesaur\HTML\FileTemplate;
 use codesaur\Base\Language;
 use codesaur\Base\Translation;
 use codesaur\Base\OutputBuffer;
@@ -79,7 +79,7 @@ class Response extends Base
     {
         $this->header($status);
         
-        if ($content instanceof Template) {
+        if ($content instanceof FileTemplate) {
             $content->render();
         } else {
             echo $content;

@@ -16,12 +16,12 @@ class ExampleController extends Controller
     
     public function hello(string $firstname)
     {
-        $template = new RetroTemplate($firstname);
+        $user = $firstname;
         if ($this->request()->hasUrlParam('lastname')) {
-            $template->enhance('user', ' ' .  $this->request()->getUrlParam('lastname'));
+            $user .= ' ' .  $this->request()->getUrlParam('lastname');
         }
-        
-        $template->render();
+
+        (new RetroTemplate($user))->render();
     }
     
     public function post_put()
@@ -31,12 +31,12 @@ class ExampleController extends Controller
         if (empty($payload->firstname)) {
             return $this->response()->error('Invalid request!');
         }
-
-        $template = new RetroTemplate($payload->firstname);
-        if ( ! empty($payload->lastname)) {
-            $template->enhance('user', " $payload->lastname");
-        }
         
-        $template->render();
+        $user = $payload->firstname;
+        if ( ! empty($payload->lastname)) {
+            $user .= " $payload->lastname";
+        }
+
+        (new RetroTemplate($user))->render();
     }
 }

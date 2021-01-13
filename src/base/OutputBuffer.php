@@ -36,7 +36,7 @@ class OutputBuffer extends Base
         return \ob_get_length();
     }
 
-    public function getContents() : string
+    public function getContents() : ?string
     {
         if ( ! \ob_get_level()) {
             return null;

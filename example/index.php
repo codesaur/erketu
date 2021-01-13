@@ -40,12 +40,12 @@ $application->post('/hello/post', function(Request $req, Response $res)
         return $res->error('Invalid request!');
     }
 
-    $template = new RetroTemplate($payload->firstname);
+    $user = $payload->firstname;
     if ( ! empty($payload->lastname)) {
-        $template->enhance('user', " $payload->lastname");
+        $user .= " $payload->lastname";
     }
 
-    $res->render($template);
+    $res->render(new RetroTemplate($user));
 });
 
 $application->handle((new Request())->initFromGlobal(), new ExampleResponse());
