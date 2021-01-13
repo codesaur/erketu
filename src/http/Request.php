@@ -1,9 +1,7 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
-use codesaur\Base\User;
 use codesaur\Globals\Server;
-use codesaur\Globals\Session;
 
 class Request extends Base
 {
@@ -211,16 +209,6 @@ class Request extends Base
         return \rtrim($url, '/');
     }
     
-    public function getUserCopy() : User
-    {
-        return $this->_user;
-    }
-    
-    public function getSessionCopy() : Session
-    {
-        return $this->_session;
-    }
-    
     public function clone(Request $request)
     {
         $this->_domain = $request->getDomain();
@@ -239,8 +227,5 @@ class Request extends Base
 
         $this->params = $request->params;
         $this->_body = $request->getBody();
-
-        $this->_user = $request->getUserCopy();
-        $this->_session = $request->getSessionCopy();
     }
 }
