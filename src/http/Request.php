@@ -43,8 +43,6 @@ class Request extends Base
         $this->_path = \preg_replace('/\/+/', '\\1/', \str_replace('/' . \basename($this->getScript()), '', $this->getScript()));
         
         $this->setBody(\file_get_contents('php://input'));
-        
-        return $this;
     }
 
     public function isSecure() : bool
