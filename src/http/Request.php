@@ -24,9 +24,6 @@ class Request extends Base
     private $_body;
     public $params;
     
-    private $_user;
-    private $_session;
-    
     public function initFromGlobal()
     {
         $server = new Server();
@@ -49,20 +46,7 @@ class Request extends Base
         
         $this->setBody(\file_get_contents('php://input'));
         
-        $this->_user = new User();
-        $this->_session = new Session();
-        
         return $this;
-    }
-    
-    public function &user() : User
-    {
-        return $this->_user;
-    }
-    
-    public function &session() : Session
-    {
-        return $this->_session;
     }
 
     public function isSecure() : bool
