@@ -1,10 +1,10 @@
 <?php namespace codesaur\Http;
 
 use codesaur\Base\Base;
-use codesaur\HTML\FileTemplate;
 use codesaur\Base\Language;
 use codesaur\Base\Translation;
 use codesaur\Base\OutputBuffer;
+use codesaur\HTML\MemoryTemplate;
 
 class Response extends Base
 {
@@ -79,7 +79,7 @@ class Response extends Base
     {
         $this->header($status);
         
-        if ($content instanceof FileTemplate) {
+        if ($content instanceof MemoryTemplate) {
             $content->render();
         } else {
             echo $content;
