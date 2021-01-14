@@ -16,17 +16,17 @@ class TwigTemplate extends FileTemplate
         
         $this->_twig = new Environment(new ArrayLoader(), array('autoescape' => false));
         
-        $this->_twig->addFilter(new TwigFilter('int', function($variable)
+        $this->_twig->addFilter(new TwigFilter('int', function ($variable)
         {
             return \intval($variable);
         }));
         
-        $this->_twig->addFilter(new TwigFilter('json_decode', function($data, $param = true)
+        $this->_twig->addFilter(new TwigFilter('json_decode', function ($data, $param = true)
         {
             return \json_decode($data, $param);
         }));
  
-        $this->_twig->addFunction(new TwigFunction('script', function($src, $attr = 'defer')
+        $this->_twig->addFunction(new TwigFunction('script', function ($src, $attr = 'defer')
         {
             $script = '<script';
             if ( ! empty($attr)) {
@@ -37,7 +37,7 @@ class TwigTemplate extends FileTemplate
             return new Markup($script, 'UTF-8');
         }));
         
-        $this->_twig->addFunction(new TwigFunction('stylesheet', function($href, $attr = null)
+        $this->_twig->addFunction(new TwigFunction('stylesheet', function ($href, $attr = null)
         {
             $link = '<link href="' . $href . '" rel="stylesheet" type="text/css"';
             if ( ! empty($attr)) {
