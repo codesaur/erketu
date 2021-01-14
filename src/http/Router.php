@@ -1,8 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
-
-class Router extends Base
+class Router
 {
     private $_routes = array();
     
@@ -42,7 +40,7 @@ class Router extends Base
         }
         
         if ( ! empty($args['name'])) {
-            if ($this->check($args['name']) && DEBUG) {
+            if ($this->check($args['name']) && DEVELOPMENT) {
                 \error_log("Route named [{$args['name']}] is found and replaced!");
             }
             $this->_routes[$args['name']] = $route;
@@ -51,12 +49,12 @@ class Router extends Base
         }
     }
     
-    public function check(string $routeName) : bool
+    public function check(string $routeName): bool
     {
          return isset($this->_routes[$routeName]);
     }
     
-    public function match(string $cleanedUrl, string $method) : ?Route
+    public function match(string $cleanedUrl, string $method): ?Route
     {
         foreach ($this->_routes as $route) {
             if ( ! \in_array($method, $route->getMethods())) {
@@ -85,13 +83,13 @@ class Router extends Base
         }
         
         if ($cleanedUrl == '/codesaur/' . __FUNCTION__) {
-            die($this->getMe());
+            die(\get_class($this));
         }
         
         return null;
     }
     
-    public function generate(string $routeName, array $params) : array
+    public function generate(string $routeName, array $params): array
     {
         try {
             if ( ! $this->check($routeName)) {
@@ -112,7 +110,7 @@ class Router extends Base
             
             return array($url, $route->getMethods());
         } catch (\Exception $e) {
-            if (DEBUG) {
+            if (DEVELOPMENT) {
                 \error_log($e->getMessage());
             }
             
@@ -155,7 +153,7 @@ class Router extends Base
         $this->mapCallback($path, $callback, $name, array('DELETE'));
     }
     
-    public function getRoutes() : array
+    public function getRoutes(): array
     {
         return $this->_routes;
     }

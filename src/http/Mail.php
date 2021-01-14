@@ -1,13 +1,13 @@
-<?php namespace codesaur\Base;
+<?php namespace codesaur\Http;
 
-class Mail extends Base
+class Mail
 {
     public $sender;
     public $to;
     public $subject;
     public $message;
     
-    public function send() : bool
+    public function send(): bool
     {
         if ( ! isset($this->sender)) {
             throw new \Exception('Mail sender must be set!');

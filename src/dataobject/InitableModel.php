@@ -1,10 +1,8 @@
-<?php namespace codesaur\MultiModel;
-
-use codesaur\DataObject\Model;
+<?php namespace codesaur\DataObject;
 
 class InitableModel extends Model implements InitableInterface
 {
-    public function setTable(string $name) : bool
+    public function setTable(string $name): bool
     {
         if ( ! parent::setTable($name)) {
             return false;
@@ -15,7 +13,7 @@ class InitableModel extends Model implements InitableInterface
         return true;
     }
     
-    public function initial() : bool
+    public function initial(): bool
     {
         return false;
     }

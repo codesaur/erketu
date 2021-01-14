@@ -1,8 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
-
-class Route extends Base
+class Route
 {
     private $_pattern;
     
@@ -15,7 +13,7 @@ class Route extends Base
     private $_filters = array();
     private $_methods = array('GET');
     
-    public function getPattern() : string
+    public function getPattern(): string
     {
         return $this->_pattern;
     }
@@ -25,7 +23,7 @@ class Route extends Base
         $this->_pattern = \rtrim($path, '/');
     }
     
-    public function getController() : string
+    public function getController(): string
     {
         return $this->_controller;
     }
@@ -35,7 +33,7 @@ class Route extends Base
         $this->_controller = $controller;
     }
     
-    public function getAction() : string
+    public function getAction(): string
     {
         return $this->_action;
     }
@@ -45,7 +43,7 @@ class Route extends Base
         $this->_action = $action;
     }
     
-    public function getMethods() : array
+    public function getMethods(): array
     {
         return $this->_methods;
     }
@@ -60,7 +58,7 @@ class Route extends Base
         $this->_filters = $filters;
     }
     
-    public function getFilters() : array
+    public function getFilters(): array
     {
         return $this->_filters;
     }
@@ -70,17 +68,17 @@ class Route extends Base
         return \preg_replace_callback('/:(\w+)/', array(&$this, 'substituteFilter'), $this->getPattern());
     }
     
-    final function substituteFilter($matches) : string
+    final function substituteFilter($matches): string
     {
-        if (isset($matches[1]) &&
-                isset($this->_filters[$matches[1]])) {
+        if (isset($matches[1])
+                && isset($this->_filters[$matches[1]])) {
             return $this->_filters[$matches[1]];
         }
         
         return '([\w-%]+)';
     }
     
-    public function getParameters() : array
+    public function getParameters(): array
     {
         return $this->_params;
     }
@@ -117,7 +115,7 @@ class Route extends Base
         return $this->_callback;
     }
     
-    public function isCallable() : bool
+    public function isCallable(): bool
     {
         return isset($this->_callback);
     }

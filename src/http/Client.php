@@ -1,11 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
-
-class Client extends Base
+class Client
 {
-    public function request(
-            string $uri, string $method, string $data, array $options)
+    public function request(string $uri, string $method, string $data, array $options)
     {
         $ch = \curl_init();
 
@@ -13,7 +10,7 @@ class Client extends Base
             CURLOPT_URL => $uri,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_USERAGENT => $this->getMe() . ' cURL Request'
+            CURLOPT_USERAGENT => \get_class($this) . ' cURL Request'
         ));
 
         if ( ! empty($data)) {

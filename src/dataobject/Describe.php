@@ -23,12 +23,12 @@ class Describe
         $this->_columns[$column->getName()] = $column;
     }
     
-    public function hasColumn(string $name) : bool
+    public function hasColumn(string $name): bool
     {
         return isset($this->getColumns()[$name]);
     }
 
-    public function &getColumn(string $name) : Column
+    public function &getColumn(string $name): Column
     {
         return $this->getColumns()[$name];
     }
@@ -38,17 +38,17 @@ class Describe
         $this->_columns[$key]->setValue($value);
     }
 
-    public function &getColumns() : array
+    public function &getColumns(): array
     {
         return $this->_columns;
     }
 
-    public function getColumnKeys() : array
+    public function getColumnKeys(): array
     {
         return \array_keys($this->getColumns());
     }
         
-    public function getColumnNames() : array
+    public function getColumnNames(): array
     {
         $names = array();
         foreach ($this->getColumns() as $key => $column) {
@@ -58,7 +58,7 @@ class Describe
         return $names;
     }
     
-    public function getTwigColumns(array $record = []) : array
+    public function getTwigColumns(array $record = []): array
     {
         $twigcolumns = array();
         foreach ($this->getColumns() as $column) {
@@ -73,7 +73,7 @@ class Describe
         return $twigcolumns;
     }
 
-    public function getPostValues(array $flags = []) : array
+    public function getPostValues(array $flags = []): array
     {
         $values = array();
         foreach ($this->getColumns() as $column) {
@@ -96,12 +96,12 @@ class Describe
         return $values;
     }
 
-    public function getBindName(string $column) : string
+    public function getBindName(string $column): string
     {
         return $this->getColumns()[$column]->getBindName();
     }
 
-    public function getDataType(string $column) : int
+    public function getDataType(string $column): int
     {
         return $this->getColumns()[$column]->getDataType();
     }   

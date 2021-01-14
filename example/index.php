@@ -22,17 +22,17 @@ $application->map('/', 'erketu\\Example\\ExampleController');
 
 $application->merge(new ExampleRouter());
 
-$application->any('/home', function()
+$application->any('/home', function ()
 {
     (new RetroTemplate())->render();
 });
 
-$application->get('/hello/:firstname/:lastname', function($req, $res) 
+$application->get('/hello/:firstname/:lastname', function ($req, $res) 
 {
     $res->render(new RetroTemplate("{$req->params->firstname} {$req->params->lastname}"));
 });
 
-$application->post('/hello/post', function(Request $req, Response $res)
+$application->post('/hello/post', function (Request $req, Response $res)
 {
     $payload = $req->getBodyJson();
 

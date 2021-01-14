@@ -2,9 +2,9 @@
 
 class Session extends superGlobal
 {
-    private $_ID;
+    private $_id;
             
-    public function has(string $var_name) : bool
+    public function has(string $var_name): bool
     {
         return parent::has_var(INPUT_SESSION, $var_name);
     }
@@ -14,7 +14,7 @@ class Session extends superGlobal
         return parent::filter(INPUT_SESSION, $var_name, $filter, $options);
     }
 
-    public function direct() : array
+    public function direct(): array
     {
         return $_SESSION;
     }
@@ -24,14 +24,12 @@ class Session extends superGlobal
         return $_SESSION[$var_name];
     }
     
-    public function start(
-            $name, $options = array(), $lifetime = null,
-            $path = '/', $domain = null, bool $secure = true, bool $httponly = true)
+    public function start($name, $options = array(), $lifetime = null, $path = '/', $domain = null, bool $secure = true, bool $httponly = true)
     {
         \session_name($name);
         
-        $this->_ID = \session_id();
-        if ( ! empty($this->_ID)) {
+        $this->_id = \session_id();
+        if ( ! empty($this->_id)) {
             return;
         }
         
@@ -42,15 +40,15 @@ class Session extends superGlobal
         \session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
         \session_start($options);
         
-        $this->_ID = \session_id();
+        $this->_id = \session_id();
     }
     
     public function getID()
     {
-        return $this->_ID;
+        return $this->_id;
     }   
 
-    public function check(string $varname) : bool
+    public function check(string $varname): bool
     {
         return isset($_SESSION[$varname]);
     }

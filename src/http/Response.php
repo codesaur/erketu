@@ -1,10 +1,9 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
 use codesaur\Base\OutputBuffer;
 use codesaur\HTML\MemoryTemplate;
 
-class Response extends Base
+class Response
 {
     private $_header;
     private $_output;
@@ -26,12 +25,12 @@ class Response extends Base
         $this->getBuffer()->endFlush();
     }
     
-    public function &getBuffer() : OutputBuffer
+    public function &getBuffer(): OutputBuffer
     {
         return $this->_output;
     }
 
-    public function &getHeader() : Header
+    public function &getHeader(): Header
     {
         return $this->_header;
     }
@@ -78,8 +77,8 @@ class Response extends Base
                 || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
         $host .= $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-        die(    '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' .
-                "<title>Error $status</title></head><body><h1>Error $status</h1>" .
-                "<p>$message</p><hr><a href=\"$host\">$host</a></body></html>");
+        die('<!doctype html><html lang="en"><head><meta charset="utf-8"/>'
+                . "<title>Error $status</title></head><body><h1>Error $status</h1>"
+                . "<p>$message</p><hr><a href=\"$host\">$host</a></body></html>");
     }
 }

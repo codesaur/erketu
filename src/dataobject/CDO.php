@@ -8,8 +8,8 @@ class CDO extends \PDO
     function __construct(array $config)
     {
         parent::__construct(
-                "{$config['driver']}:host={$config['host']}" .
-                ";dbname={$config['name']};charset={$config['charset']}",
+                "{$config['driver']}:host={$config['host']}"
+                . ";dbname={$config['dbname']};charset={$config['charset']}",
                 $config['username'], $config['password'], $config['options']
         );
                 
@@ -17,42 +17,42 @@ class CDO extends \PDO
         $this->_connected = true;
     }
     
-    public function alive() : bool
+    public function alive(): bool
     {
         return $this->_connected;
     }
     
-    public function getConfig() : array
+    public function getConfig(): array
     {
         return $this->_config;
     }
 
-    public function getCharset() : string
+    public function getCharset(): ?string
     {
         return $this->getConfig()['charset'];
     }
 
-    public function getCollation() : string
+    public function getCollation(): ?string
     {
         return $this->getConfig()['collation'];
     }
 
-    public function getDB() : string
+    public function getDB(): ?string
     {
         return $this->getConfig()['name'];
     }
     
-    public function getDriver() : string
+    public function getDriver(): ?string
     {
         return $this->getConfig()['driver'];
     }
 
-    public function getEngine() : string
+    public function getEngine(): ?string
     {
         return $this->getConfig()['engine'];
     }
 
-    public function getHost() : string
+    public function getHost(): ?string
     {
         return $this->getConfig()['host'];
     }

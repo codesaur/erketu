@@ -17,17 +17,20 @@ class FileTemplate extends MemoryTemplate
 
     public function file(string $filepath)
     {
-        if ( ! $this->isEmpty($filepath)) {
-            $this->_file = $filepath;
+        if (empty($filepath)
+                || \ctype_space($filepath)) {
+            return;
         }
+        
+        $this->_file = $filepath;
     }
     
-    public function getFileName() : ?string
+    public function getFileName(): ?string
     {
         return $this->_file;
     }
 
-    public function getFileSource() : ?string
+    public function getFileSource(): ?string
     {
         if (empty($this->getFileName())) {
             return 'Error settings of Template.';
@@ -53,7 +56,7 @@ class FileTemplate extends MemoryTemplate
         return $fileSource;
     }
 
-    public function output() : string
+    public function output(): string
     {
         $this->source($this->getFileSource());
 

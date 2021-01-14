@@ -1,6 +1,4 @@
-<?php namespace codesaur\MultiModel;
-
-use codesaur\DataObject\Describe;
+<?php namespace codesaur\DataObject;
 
 class MultiDescribe
 {
@@ -15,12 +13,12 @@ class MultiDescribe
         return $this;
     }
     
-    public function getPrimary() : Describe
+    public function getPrimary(): Describe
     {
         return $this->primary;
     }
     
-    public function getContent() : Describe
+    public function getContent(): Describe
     {
         return $this->content;
     }

@@ -1,6 +1,6 @@
 <?php namespace codesaur\Base;
 
-class File extends Base
+class File
 {
     public $handle = null;
     
@@ -27,25 +27,25 @@ class File extends Base
         }
     }
 
-    public function exists(string $pathname) : bool
+    public function exists(string $path): bool
     {
-        return \file_exists($pathname);
+        return \file_exists($path);
     }
 
-    public function getExt(string $path) : string
+    public function getExt(string $path): string
     {
         return \strtolower(\pathinfo($path, PATHINFO_EXTENSION));
     }
     
-    public function getSize(string $path) : int
+    public function getSize(string $path)
     {
-        return $this->exists($path) ? \filesize($path) : 0;
+        return $this->exists($path) ? \filesize($path): false;
     }
 
-    public function getMimeType(string $filename) : string
+    public function getMimeType(string $apth): string
     {
         $file_info = new \finfo(FILEINFO_MIME);
-        $mime_type = $file_info->buffer(\file_get_contents($filename));
+        $mime_type = $file_info->buffer(\file_get_contents($apth));
         
         return $mime_type;
     }
@@ -55,12 +55,12 @@ class File extends Base
         return \pathinfo($path, PATHINFO_FILENAME);
     }
 
-    public function getName(string $path) : string
+    public function getName(string $path): string
     {
         return \basename($path);
     }
     
-    public function getAllowed(int $type = 0) : array
+    public function getAllowed(int $type = 0): array
     {
         switch ($type) {
             case 1: return ['xls', 'xlsx', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt'];
@@ -68,6 +68,7 @@ class File extends Base
             case 3: return ['jpg', 'jpeg', 'jpe', 'png', 'gif'];
             case 4: return ['ico', 'bmp', 'txt', 'xml', 'json'];
             case 5: return ['zip', 'rar'];
+            
             default:
                 return \array_merge(
                         $this->getAllowed(1),
@@ -78,14 +79,14 @@ class File extends Base
         }
     }
     
-    public function generateName(string $uploadpath, string $filename)
+    public function getNameString(string $path, string $filename): string
     {
-        if ($this->exists($uploadpath . $filename)) {
+        if ($this->exists($path . $filename)) {
             $number = 1;
             $ext = $this->getExt($filename);
             $fname = $this->getNaked($filename);
             while (true) {
-                if ($this->exists($uploadpath . $fname . " ($number)." . $ext)) {
+                if ($this->exists($path . $fname . " ($number)." . $ext)) {
                     $number++;
                 } else {
                     break;
@@ -97,14 +98,14 @@ class File extends Base
         return $filename;
     }
     
-    public function formatBytes($bytes, $precision = 2, array $suffixes = ['', 'KB', 'MB', 'GB', 'TB'])
+    public function formatBytes($bytes, $precision = 2, array $suffixes = ['', 'KB', 'MB', 'GB', 'TB']): float
     { 
         $base = \log($bytes, 1024);
         
         return \round(\pow(1024, $base - \floor($base)), $precision) .' '. $suffixes[\floor($base)];
     }
 
-    public function isUpload($input) : bool
+    public function isUpload($input): bool
     {
         if (\is_array($input)) {
             return isset($_FILES[\key($input)]['name'][\current($input)]);
@@ -113,32 +114,29 @@ class File extends Base
         }        
     }
     
-    public function isUploadImage($input) : bool
+    public function isUploadImage($input): bool
     {
-
         if (\is_array($input)) {
             $field = \current($input);
             $input = \key($input);
-            if (isset($_FILES[$input]['tmp_name'][$field]) &&
-                    ! $this->isEmpty($_FILES[$input]['tmp_name'][$field])) {
+            if (isset($_FILES[$input]['tmp_name'][$field])) {
                 return false !== \getimagesize($_FILES[$input]['tmp_name'][$field]);
             }
-        } elseif (isset($_FILES[$input]['tmp_name']) &&
-                ! $this->isEmpty($_FILES[$input]['tmp_name'])) {
+        } elseif (isset($_FILES[$input]['tmp_name'])) {
             return false !== \getimagesize($_FILES[$input]['tmp_name']);
         }
         
         return false;
     }
-
-    public function isUploaded(string $pathname) : bool
+    
+    public function isUploaded(string $path): bool
     {
-        return \is_uploaded_file($pathname);
+        return \is_uploaded_file($path);
     }
 
-    public function isImage(string $filename) : bool
+    public function isImage(string $path): bool
     {
-        $mime_type = $this->getMimeType($filename);
+        $mime_type = $this->getMimeType($path);
         switch ($mime_type) {
             case 'image/png': 
             case 'image/ico': 
@@ -151,14 +149,12 @@ class File extends Base
         return false;
     }
 
-    public function isDir(string $filename) : bool
+    public function isDir(string $path): bool
     {
-        return \is_dir($filename);
+        return \is_dir($path);
     }
 
-    public function upload(
-            $input, string $uploadpath,
-            array $allowed = [], $overwrite = false, $sizelimit = false) : array
+    public function upload($input, string $path, array $allowed = [], $overwrite = false, $sizelimit = false): array
     {
         if (\is_array($input)) {
             $field = \current($input);
@@ -173,7 +169,7 @@ class File extends Base
         }
         
         if ( ! $overwrite) {
-            $file = $this->generateName($uploadpath, $this->getName($field ? $_FILES[$input]['name'][$field] : $_FILES[$input]['name']));
+            $file = $this->getNameString($path, $this->getName($field ? $_FILES[$input]['name'][$field] : $_FILES[$input]['name']));
         } else {
             $file = $this->getName($field ? $_FILES[$input]['name'][$field] : $_FILES[$input]['name']);
         }
@@ -182,14 +178,14 @@ class File extends Base
             throw new \Exception("Unable to upload a file: This file type [$ext] is not supported");
         }
         
-        if ( ! $this->exists($uploadpath) || ! $this->isDir($uploadpath)) {
-            $this->makeDir($uploadpath, 0755, true);
+        if ( ! $this->exists($path) || ! $this->isDir($path)) {
+            $this->makeDir($path, 0755, true);
         }
         
         $tmp_file = $field ? $_FILES[$input]['tmp_name'][$field] : $_FILES[$input]['tmp_name'];
-        if (\move_uploaded_file($tmp_file, $uploadpath . $file)) {
+        if (\move_uploaded_file($tmp_file, $path . $file)) {
             return array(
-                'dir' => $uploadpath,
+                'dir' => $path,
                 'name' => $file,
                 'ext' => $ext,
                 'size' => $size
@@ -199,26 +195,26 @@ class File extends Base
         }
     }
 
-    public function makeDir(string $pathname, $mode = 0755, $recursive = true, $context = null) : bool
+    public function makeDir(string $path, $mode = 0755, $recursive = true, $context = null): bool
     {
         if (isset($context)) {
-            return \mkdir($pathname, $mode, $recursive, $context);
+            return \mkdir($path, $mode, $recursive, $context);
         } else {
-            return \mkdir($pathname, $mode, $recursive);
+            return \mkdir($path, $mode, $recursive);
         }
     }
     
-    public function deleteDir($dirPath)
+    public function deleteDir($path)
     {
-        if ( ! \is_dir($dirPath)) {
-            throw new \InvalidArgumentException("$dirPath must be a directory");
+        if ( ! \is_dir($path)) {
+            throw new \InvalidArgumentException("$path must be a directory");
         }
         
-        if (\substr($dirPath, \strlen($dirPath) - 1, 1) != '/') {
-            $dirPath .= '/';
+        if (\substr($path, \strlen($path) - 1, 1) != '/') {
+            $path .= '/';
         }
         
-        $files = \glob($dirPath . '*', GLOB_MARK);
+        $files = \glob($path . '*', GLOB_MARK);
         foreach ($files as $file) {
             if ($this->isDir($file)) {
                 $this->deleteDir($file);
@@ -227,26 +223,26 @@ class File extends Base
             }
         }
         
-        \rmdir($dirPath);
+        \rmdir($path);
     }
     
-    public function open(string $filename, string $mode, bool $useincludepath = false, $context = null)
+    public function open(string $path, string $mode, bool $useincludepath = false, $context = null)
     {
         if (isset($context)) {
-            $this->handle = \fopen($filename, $mode, $useincludepath, $context);
+            $this->handle = \fopen($path, $mode, $useincludepath, $context);
         } else {
-            $this->handle = \fopen($filename, $mode, $useincludepath);
+            $this->handle = \fopen($path, $mode, $useincludepath);
         }
         
         return $this->handle;
     }
     
-    public function read(int $length = 4096) : string
+    public function read(int $length = 4096): string
     {
         return \fread($this->handle, $length);
     }
 
-    public function readFull(int $length = 4096) : array
+    public function readFull(int $length = 4096): array
     {
         $lines = [];
         while ( ! \feof($this->handle)) { 
@@ -257,12 +253,12 @@ class File extends Base
         return $lines;
     }
 
-    public function rename(string $oldname, string $newname, $context = null) : bool
+    public function rename(string $old_path, string $new_path, $context = null): bool
     {
-        return \rename($oldname, $newname, $context);
+        return \rename($old_path, $new_path, $context);
     }
 
-    public function write(string $content)
+    public function write(string $content): int
     {
         return \fwrite($this->handle, $content);
     }

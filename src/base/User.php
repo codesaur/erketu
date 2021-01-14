@@ -7,7 +7,7 @@ class Authentication
     const Locked = 2;
 }
 
-class User extends Base
+class User
 {
     private $_rbac;
     private $_account;
@@ -19,7 +19,7 @@ class User extends Base
     {
         if ( ! isset($account['id'])
                 || ! isset($organizations[0]['id'])) {           
-            throw new \Exception('Invalid RBAC user information!');
+            throw new \Exception('Invalid user information!');
         }
 
         $this->_rbac = $rbac;
@@ -61,12 +61,12 @@ class User extends Base
         return $this->_organizations[0][$key] ?? null;
     }
     
-    public function organizations() : ?array
+    public function organizations(): ?array
     {
         return $this->_organizations;
     }
 
-    public function is($role) : bool
+    public function is($role): bool
     {        
         if (isset($this->_rbac['system_coder'])) {
             return true;
@@ -75,7 +75,7 @@ class User extends Base
         return isset($this->_rbac[$role]);
     }
 
-    public function can($permission, $role = null) : bool
+    public function can($permission, $role = null): bool
     {
         if (isset($this->_rbac['system_coder'])) {
             return true;

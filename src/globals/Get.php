@@ -2,7 +2,7 @@
 
 class Get extends superGlobal
 {
-    public function has(string $var_name) : bool
+    public function has(string $var_name): bool
     {
         return parent::has_var(INPUT_GET, $var_name);
     }
@@ -12,7 +12,7 @@ class Get extends superGlobal
         return parent::filter(INPUT_GET, $var_name, $filter, $options);
     }
 
-    public function direct() : array
+    public function direct(): array
     {
         return $_GET;
     }

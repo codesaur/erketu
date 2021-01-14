@@ -1,10 +1,8 @@
 <?php namespace codesaur\Globals;
 
-use codesaur\Base\Base;
-
-abstract class superGlobal extends Base
+abstract class superGlobal
 {
-    public function has_var(int $type, string $var_name) : bool
+    public function has_var(int $type, string $var_name): bool
     {
         return \filter_has_var($type, $var_name);
     }

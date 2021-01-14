@@ -1,8 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
-
-class Header extends Base
+class Header
 {
     private $_status;
 
@@ -28,12 +26,12 @@ class Header extends Base
         }
     }
 
-    function isSent(string &$file = null, int &$line = null) : bool
+    function isSent(string &$file = null, int &$line = null): bool
     {
         return \headers_sent($file, $line);
     }
     
-    public function getStatus() : int
+    public function getStatus(): int
     {
         return $this->_status;
     }

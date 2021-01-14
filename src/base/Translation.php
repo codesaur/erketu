@@ -1,10 +1,10 @@
 <?php namespace codesaur\Base;
 
-class Translation extends Base
+class Translation
 {
     public $text = array();
     
-    public function create(string $name, array $values) : bool
+    public function create(string $name, array $values): bool
     {
         if (isset($this->text[$name])) {
             return false;
@@ -15,12 +15,12 @@ class Translation extends Base
         return true;
     }
     
-    public function get(string $name) : ?array
+    public function get(string $name): ?array
     {
         return $this->text[$name] ?? null;
     }
     
-    public function value(string $key) : string
+    public function value(string $key): string
     {
         foreach ($this->text as $translation) {
             if (isset($translation[$key])) {
@@ -28,7 +28,7 @@ class Translation extends Base
             }
         }
         
-        if (DEBUG) {
+        if (DEVELOPMENT) {
             \error_log("UNTRANSLATED: $key");
         }
         

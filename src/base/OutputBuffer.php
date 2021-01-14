@@ -1,6 +1,6 @@
 <?php namespace codesaur\Base;
 
-class OutputBuffer extends Base
+class OutputBuffer
 {
     public function start($chunk_size = 0, $erase = PHP_OUTPUT_HANDLER_STDFLAGS)
     {
@@ -31,12 +31,12 @@ class OutputBuffer extends Base
         }
     }
     
-    public function getLength() : int
+    public function getLength(): int
     {
         return \ob_get_length();
     }
 
-    public function getContents() : ?string
+    public function getContents(): ?string
     {
         if ( ! \ob_get_level()) {
             return null;

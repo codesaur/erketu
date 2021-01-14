@@ -1,9 +1,4 @@
-<?php namespace codesaur\MultiModel;
-
-use codesaur\DataObject\CDO;
-use codesaur\DataObject\Model;
-use codesaur\DataObject\Column;
-use codesaur\DataObject\Describe;
+<?php namespace codesaur\DataObject;
 
 class MultiModel extends InitableModel
 {
@@ -19,7 +14,7 @@ class MultiModel extends InitableModel
         $this->content = new Model($conn);
     }
 
-    public function setTables(string $primary, $content = null) : bool
+    public function setTables(string $primary, $content = null): bool
     {
         $this->content->setTable($content ?? "{$primary}_content");
         
@@ -45,7 +40,7 @@ class MultiModel extends InitableModel
         }
     }
 
-    public function second() : Model
+    public function second(): Model
     {
         return $this->content;
     }
@@ -66,13 +61,11 @@ class MultiModel extends InitableModel
         return $id;
     }
     
-    public function updates(
-            array $primary, array $content,
-            array $where = ['primary' => [], 'content' => []], string $condition = '')
+    public function updates(array $primary, array $content, array $where = ['primary' => [], 'content' => []], string $condition = '')
     {
         $id = parent::update($primary, $where['primary'], $condition);
         if ($id !== false) {
-            if ($this->isEmpty($where['content'])) {
+            if (empty($where['content'])) {
                 $where['content'] = [$this->key, $this->flag];
             }
             
@@ -88,8 +81,7 @@ class MultiModel extends InitableModel
         return $id;
     }
 
-    public function replaces(
-            array $primary, array $content, string $keyColumnName = '_keyword_')
+    public function replaces(array $primary, array $content, string $keyColumnName = '_keyword_')
     {
         if (isset($primary[$keyColumnName])) {
             $existing = $this->getBy($keyColumnName, $primary[$keyColumnName]);
@@ -125,7 +117,7 @@ class MultiModel extends InitableModel
         return false;
     }
     
-    public function selectjoin($selection, array $condition = []) : \PDOStatement
+    public function selectjoin($selection, array $condition = []): \PDOStatement
     {
         $condition['JOIN'] =
                 'p INNER JOIN `' . $this->content->getTable() . "` c ON p.$this->primary=c.$this->key";
@@ -133,8 +125,7 @@ class MultiModel extends InitableModel
         return parent::select($selection, [], $condition);
     }
     
-    public function statement(
-            array $primary = [], array $content = [], array $condition = []) : \PDOStatement
+    public function statement(array $primary = [], array $content = [], array $condition = []): \PDOStatement
     {
         if ($primary == array() && $content == array()) {
             $selection = '*';
@@ -167,7 +158,7 @@ class MultiModel extends InitableModel
         return $this->selectjoin($selection, $condition);
     }
 
-    public function statementBy($id, string $flag = null) : \PDOStatement
+    public function statementBy($id, string $flag = null): \PDOStatement
     {
         if ( ! $this->describe->getColumn($this->primary)->isIntType()) {
             $id = $this->dataobject()->quote($id);
@@ -198,11 +189,11 @@ class MultiModel extends InitableModel
             $column = $this->describe->getColumn($name);
 
             $stmt = $this->dataobject()->prepare(
-                    'SELECT * FROM ' . $this->getTable() . 
-                    ' WHERE ' . $column->getName() . '=' . $column->getBindName());
+                    'SELECT * FROM ' . $this->getTable()
+                    . ' WHERE ' . $column->getName() . '=' . $column->getBindName());
             $stmt->bindParam(
                     $column->getBindName(), $value, $column->getDataType(),
-                    $column->needLength() ? $column->getLength() : null);
+                    $column->needLength() ? $column->getLength(): null);
             $stmt->execute();
 
             if ($stmt->rowCount() == 1) {
@@ -214,7 +205,7 @@ class MultiModel extends InitableModel
         return null;
     }
 
-    public function getByID($value, $flag = null) : array
+    public function getByID($value, $flag = null): array
     {
         $record = array();
         $pdostmt = $this->statementBy($value, $flag);
@@ -224,7 +215,7 @@ class MultiModel extends InitableModel
                     if (isset($data[$column->getName()])) {
                         $record[$column->getName()] = $data[$column->getName()];
                     } else {
-                        $record[$column->getName()] = $column->getDefault(null);
+                        $record[$column->getName()] = $column->getDefault();
                     }
                 }
             }
@@ -236,7 +227,7 @@ class MultiModel extends InitableModel
                     if (isset($data[$ccolumn->getName()])) {
                         $record[$ccolumn->getName()][$data[$this->flag]] = $data[$ccolumn->getName()];
                     } else {
-                        $record[$ccolumn->getName()][$data[$this->flag]] = $ccolumn->getDefault(null);
+                        $record[$ccolumn->getName()][$data[$this->flag]] = $ccolumn->getDefault();
                     }
                 }
             }
@@ -245,7 +236,7 @@ class MultiModel extends InitableModel
         return $record;
     }
     
-    public function getRows(array $condition = []) : array
+    public function getRows(array $condition = []): array
     {
         if (empty($condition)) {
             $condition = ['ORDER BY' => $this->primary];
@@ -254,7 +245,7 @@ class MultiModel extends InitableModel
         return $this->getStatementRows($this->selectjoin('*', $condition));
     }
     
-    public function getStatementRows(\PDOStatement $pdostmt) : array
+    public function getStatementRows(\PDOStatement $pdostmt): array
     {
         $rows = array();
         while ($data = $pdostmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -263,7 +254,7 @@ class MultiModel extends InitableModel
                     if (isset($data[$column->getName()])) {
                         $rows[$data[$this->primary]][$column->getName()] = $data[$column->getName()];
                     } else {
-                        $rows[$data[$this->primary]][$column->getName()] = $column->getDefault(null);
+                        $rows[$data[$this->primary]][$column->getName()] = $column->getDefault();
                     }
                 }
             }
@@ -275,7 +266,7 @@ class MultiModel extends InitableModel
                     if (isset($data[$ccolumn->getName()])) {
                         $rows[$data[$this->primary]][$ccolumn->getName()][$data[$this->flag]] = $data[$ccolumn->getName()];
                     } else {
-                        $rows[$data[$this->primary]][$ccolumn->getName()][$data[$this->flag]] = $ccolumn->getDefault(null);
+                        $rows[$data[$this->primary]][$ccolumn->getName()][$data[$this->flag]] = $ccolumn->getDefault();
                     }
                 }
             }

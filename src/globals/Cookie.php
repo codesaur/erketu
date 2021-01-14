@@ -2,7 +2,7 @@
 
 class Cookie extends superGlobal
 {
-    public function has(string $var_name) : bool
+    public function has(string $var_name): bool
     {
         return parent::has_var(INPUT_COOKIE, $var_name);
     }
@@ -12,7 +12,7 @@ class Cookie extends superGlobal
         return parent::filter(INPUT_COOKIE, $var_name, $filter, $options);
     }
 
-    public function direct() : array
+    public function direct(): array
     {
         return $_COOKIE;
     }

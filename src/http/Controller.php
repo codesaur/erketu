@@ -1,8 +1,6 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
-
-class Controller extends Base
+class Controller
 {
     private $_request;
     private $_response;
@@ -13,18 +11,13 @@ class Controller extends Base
         $this->_response = $response;
     }
     
-    public function request() : Request
+    public function request(): Request
     {
         return $this->_request;
     }
     
-    public function response() : Response
+    public function response(): Response
     {
         return $this->_response;
-    }
-
-    public function getNick() : string
-    {
-        return \str_replace($this->getMeClean(__CLASS__), '', $this->getMeClean());
     }
 }

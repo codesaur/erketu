@@ -9,7 +9,7 @@ class ExampleController extends Controller
         (new RetroTemplate())->render();
     }
     
-    public function response() : ExampleResponse
+    public function response(): ExampleResponse
     {
         return parent::response();
     }

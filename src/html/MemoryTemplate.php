@@ -1,8 +1,6 @@
 <?php namespace codesaur\HTML;
 
-use codesaur\Base\Base;
-
-class MemoryTemplate extends Base
+class MemoryTemplate
 {
     protected $_html = '';
     protected $_vars = array();
@@ -51,7 +49,7 @@ class MemoryTemplate extends Base
             return $this->_vars[$key];
         }
         
-        if (DEBUG) {
+        if (DEVELOPMENT) {
             \error_log("TEMPLATE KEY NOT DEFINED: $key");
         }        
         
@@ -59,7 +57,7 @@ class MemoryTemplate extends Base
         return $nulldata;
     }
 
-    public function getVars() : array
+    public function getVars(): array
     {
         return $this->_vars;
     }
@@ -69,11 +67,11 @@ class MemoryTemplate extends Base
         return $this->_html;
     }
 
-    protected function compile(string $html) : string
+    protected function compile(string $html): string
     {
         foreach ($this->getVars() as $key => $value) {
             $tagToReplace = "{@$key}";
-            $html = \str_replace($tagToReplace, isset($value) ? $this->stringify($value) : '', $html);
+            $html = \str_replace($tagToReplace, isset($value) ? $this->stringify($value): '', $html);
         }
         
         return $html;
@@ -84,12 +82,12 @@ class MemoryTemplate extends Base
         echo $this->output();
     }
 
-    public function output() : string
+    public function output(): string
     {
         return $this->compile($this->getSource());
     }
     
-    function stringify($content) : string
+    function stringify($content): string
     {
         if (\is_array($content)) {
             $text = '';

@@ -18,9 +18,9 @@ class RBACUser implements \JsonSerializable
         
         $roles = new Roles($connection);
         $user_role = new UserRole($connection);
-        $sql =  'SELECT t1.role_id, t2.name, t2.alias ' .
-                "FROM {$user_role->getTable()} as t1 JOIN {$roles->getTable()} as t2 " .
-                'ON t1.role_id = t2.id WHERE t1.user_id = :user_id AND t1.is_active = 1';
+        $sql =  'SELECT t1.role_id, t2.name, t2.alias '
+                . "FROM {$user_role->getTable()} as t1 JOIN {$roles->getTable()} as t2 "
+                . 'ON t1.role_id = t2.id WHERE t1.user_id = :user_id AND t1.is_active = 1';
 
         $pdo_stmt = $connection->prepare($sql);
         $pdo_stmt->execute(array(':user_id' => $user_id));
@@ -33,7 +33,7 @@ class RBACUser implements \JsonSerializable
         }
     }
 
-    public function hasRole(string $roleName) : bool
+    public function hasRole(string $roleName): bool
     {
         foreach (\array_keys($this->role) as $name) {
             if ($name == $roleName) {
@@ -44,7 +44,7 @@ class RBACUser implements \JsonSerializable
         return false;
     }
 
-    public function hasPrivilege(string $permissionName, $roleName = null) : bool
+    public function hasPrivilege(string $permissionName, $roleName = null): bool
     {
         if (isset($roleName)) {
             if (isset($this->role[$roleName])) {

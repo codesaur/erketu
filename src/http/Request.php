@@ -1,9 +1,8 @@
 <?php namespace codesaur\Http;
 
-use codesaur\Base\Base;
 use codesaur\Globals\Server;
 
-class Request extends Base
+class Request
 {
     private $_domain;
     private $_secure;
@@ -45,27 +44,27 @@ class Request extends Base
         $this->setBody(\file_get_contents('php://input'));
     }
 
-    public function isSecure() : bool
+    public function isSecure(): bool
     {
         return $this->_secure;
     }
 
-    public function getDomain() : string
+    public function getDomain(): string
     {
         return $this->_domain;
     }
     
-    public function getHttpHost() : string
+    public function getHttpHost(): string
     {
         return $this->_httphost;
     }
     
-    public function getUrl() : string
+    public function getUrl(): string
     {
         return $this->_url;
     }
     
-    public function getCleanUrl() : string
+    public function getCleanUrl(): string
     {
         return $this->_url_clean;
     }
@@ -79,7 +78,7 @@ class Request extends Base
         }
     }
         
-    public function getUrlParams() : array
+    public function getUrlParams(): array
     {
         return $this->_url_params;
     }
@@ -89,7 +88,7 @@ class Request extends Base
         return $this->_url_params[$key] ?? null;
     }
 
-    public function hasUrlParam($key) : bool
+    public function hasUrlParam($key): bool
     {
         return \in_array($key, \array_keys($this->_url_params));
     }
@@ -105,27 +104,27 @@ class Request extends Base
         return true;
     }
 
-    public function getPath() : string
+    public function getPath(): string
     {
         return $this->_path;
     }
     
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->_method;
     }
     
-    public function getScript() : string
+    public function getScript(): string
     {
         return $this->_script;
     }
     
-    public function getUrlSegments() : array
+    public function getUrlSegments(): array
     {
         return $this->_url_segments;
     }
     
-    public function getAppSegment() : string
+    public function getAppSegment(): string
     {
         return $this->_url_app_segment;
     }
@@ -145,12 +144,12 @@ class Request extends Base
         return \json_decode($this->_body, $assoc, $depth, $options);
     }
 
-    public function getPathComplete() : string
+    public function getPathComplete(): string
     {
         return $this->getPath() . $this->_url_app_segment;
     }
     
-    public function getQueryString() : string
+    public function getQueryString(): string
     {
         if (empty($this->getUrlParams())) {
             return '';
@@ -182,7 +181,7 @@ class Request extends Base
         }
     }
 
-    function cleanUrl(string $url, string $query_string) : string
+    function cleanUrl(string $url, string $query_string): string
     {
         $dir_name = \dirname($this->getScript());
         

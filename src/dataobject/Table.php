@@ -1,8 +1,6 @@
 <?php namespace codesaur\DataObject;
 
-use codesaur\Base\Base;
-
-class Table extends Base
+class Table
 {
     public $do;       // CDO - codesaur DataObject
     public $describe; // Table structure
@@ -36,15 +34,15 @@ class Table extends Base
     
     public function __toString()
     {
-        return $this->getTableClean();
+        return $this->getTable();
     }
     
-    public function dataobject() : MySQL
+    public function dataobject(): MySQL
     {
         return $this->do;
     }
     
-    function create(string $name, array $columns) : int
+    function create(string $name, array $columns): int
     {
         $sql = '';
         $special = '';
@@ -67,8 +65,8 @@ class Table extends Base
                 $hasForeignKey = true;
                 $foreign = $field->getForeignKey();
                 $special .= ($special != '') ? ', ' : '';
-                $special .= 'FOREIGN KEY (`' . (\is_array($foreign) ? \key($foreign) : $field->getName())
-                    . '`)' . ' REFERENCES ' . (\is_array($foreign) ? \current($foreign) : $foreign);
+                $special .= 'FOREIGN KEY (`' . (\is_array($foreign) ? \key($foreign): $field->getName())
+                    . '`) REFERENCES ' . (\is_array($foreign) ? \current($foreign): $foreign);
             }
         }
         $query = "CREATE TABLE `$name` ($sql";
@@ -94,18 +92,13 @@ class Table extends Base
     {
         return $this->_sql_table;
     }
-
-    public function getTableClean()
-    {
-        return $this->getTable();
-    }
     
-    public function getDescribe() : Describe
+    public function getDescribe(): Describe
     {
         return $this->describe;
     }
     
-    public function setTable(string $name) : bool
+    public function setTable(string $name): bool
     {
         $this->_sql_table = \preg_replace('/[^A-Za-z0-9_-]/', '', $name);
         
@@ -194,8 +187,10 @@ class Table extends Base
     {
         $columns = \array_keys($record);
         $this->verify($record, $columns);
-
-        if ($this->isEmpty($where) && $this->isEmpty($condition)) {
+        
+        $empty_condition = empty($condition) || \ctype_space($condition);
+        
+        if (empty($where) && $empty_condition) {
             if ( ! isset($record[$this->primary])) {
                 throw new \Exception('no primary index to update');
             }
@@ -212,7 +207,7 @@ class Table extends Base
             }
         }
         
-        if ( ! $this->isEmpty($condition)) {
+        if ( ! $empty_condition) {
             $clause .= ($clause == '') ? $condition : " AND $condition";
         }
         
@@ -228,8 +223,8 @@ class Table extends Base
         if ($set == '') {
             if (isset($record[$this->primary])) {
                 $stmt = $this->dataobject()->prepare(
-                        'UPDATE `' . $this->getTable() . "` SET $this->primary=" .
-                        $this->describe->getBindName($this->primary) . " WHERE $clause");
+                        'UPDATE `' . $this->getTable() . "` SET $this->primary="
+                        . $this->describe->getBindName($this->primary) . " WHERE $clause");
             } else {
                 throw new \Exception('no primary record for update');
             }
@@ -254,8 +249,7 @@ class Table extends Base
         return false;
     }
     
-    public function select(
-            string $selection = '*', array $columns = [], array $condition = []) : \PDOStatement
+    public function select(string $selection = '*', array $columns = [], array $condition = []): \PDOStatement
     {
         $query = "SELECT $selection FROM `" . $this->getTable() . '`';        
         if (isset($condition['JOIN'])) {
@@ -281,7 +275,7 @@ class Table extends Base
         return $pdostmt;
     }
     
-    public function selectBy(array $params, array $condition = []) : \PDOStatement
+    public function selectBy(array $params, array $condition = []): \PDOStatement
     {
         $columns = [];
         foreach ($params as $key => $value) {
@@ -294,7 +288,7 @@ class Table extends Base
         return $this->select('*', $columns, $condition);
     }
 
-    public function where(array $columns, string $sql = '') : string
+    public function where(array $columns, string $sql = ''): string
     {
         $clause = '';
         if ( ! empty($columns)) {
@@ -318,8 +312,8 @@ class Table extends Base
 
     public function delete(array $columns)
     {
-        if (\getenv('DB_KEEP_DATA', true) == 'true' &&
-                $this->describe->hasColumn('is_active')) {
+        if (\getenv('DB_KEEP_DATA', true) == 'true'
+                && $this->describe->hasColumn('is_active')) {
             return $this->deactivate($columns);
         }
         
@@ -405,7 +399,7 @@ class Table extends Base
         return null;
     }
 
-    public function getRows(array $condition = []) : array
+    public function getRows(array $condition = []): array
     {
         if (empty($condition)) {
             $condition['ORDER BY'] = $this->primary;
@@ -414,7 +408,7 @@ class Table extends Base
         return $this->getStatementRows($this->select('*', array(), $condition));
     }
     
-    public function getStatementRows(\PDOStatement $pdostmt) : array
+    public function getStatementRows(\PDOStatement $pdostmt): array
     {
         $rows = array();
         while ($data = $pdostmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -422,7 +416,7 @@ class Table extends Base
                 if (isset($data[$column->getName()])) {
                     $rows[$data[$this->primary]][$column->getName()] = $data[$column->getName()];
                 } else {
-                    $rows[$data[$this->primary]][$column->getName()] = $column->getDefault(null);
+                    $rows[$data[$this->primary]][$column->getName()] = $column->getDefault();
                 }
             }
         }

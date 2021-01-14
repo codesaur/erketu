@@ -1,8 +1,8 @@
 <?php namespace erketu\Example;
 
-use codesaur\HTML\FileTemplate;
+use codesaur\HTML\TwigTemplate;
 
-class RetroTemplate extends FileTemplate
+class RetroTemplate extends TwigTemplate
 {
     function __construct($user = null)
     {

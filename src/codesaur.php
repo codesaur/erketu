@@ -59,9 +59,9 @@ if ( ! function_exists('codesaur_environment')) {
         Dotenv\Dotenv::create("$vendor_dir/..")->load();
     }
     
-    define('DEBUG', getenv('APP_ENV', true) != 'production');
+    define('DEVELOPMENT', getenv('APP_ENV', true) != 'production');
     
-    ini_set('display_errors', DEBUG ? 'On' : 'Off');
+    ini_set('display_errors', DEVELOPMENT ? 'On' : 'Off');
     
     $timezone = getenv('TIME_ZONE', true);
     if ($timezone) {
@@ -79,7 +79,7 @@ if ( ! function_exists('codesaur_environment')) {
 if ( ! function_exists('codesaur_vardump')) {    
     function codesaur_vardump($var, bool $full = true)
     {
-        if ( ! DEBUG) {
+        if ( ! DEVELOPMENT) {
             return;
         }
         

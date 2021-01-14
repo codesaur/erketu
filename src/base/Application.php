@@ -4,7 +4,7 @@ use codesaur\Http\Router;
 use codesaur\Http\Request;
 use codesaur\Http\Response;
 
-class Application extends Base
+class Application
 {
     private $_router;
     
@@ -13,7 +13,7 @@ class Application extends Base
         $this->_router = new Router();
     }
 
-    public function &router() : Router
+    public function &router(): Router
     {
         return $this->_router;
     }
@@ -69,7 +69,7 @@ class Application extends Base
             $request->setParams($route->getParameters());
             
             if ($route->isCallable()) {
-                $this->callFuncArray($route->getCallback(), array($request, $response));
+                \call_user_func_array($route->getCallback(), array($request, $response));
             } else {
                 $controllerClass = $route->getController();
                 if ( ! \class_exists($controllerClass)) {
@@ -82,7 +82,7 @@ class Application extends Base
                     throw new \Exception("Action named $action is not part of $controllerClass!");
                 }
                 
-                $this->callFuncArray(array($controller, $action), $route->getParameters()); 
+                \call_user_func_array(array($controller, $action), $route->getParameters()); 
             }       
         } catch (\Exception $ex) {
             $response->error($ex->getMessage(), 404);

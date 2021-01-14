@@ -1,9 +1,9 @@
 <?php namespace codesaur\Base;
 
-class Language extends Base
+class Language
 {
-    private $_current;
-    private $_languages;
+    private $_current = '';
+    private $_languages = array();
 
     public function create(array $languages)
     {
@@ -20,7 +20,7 @@ class Language extends Base
         return $this->current();
     }
     
-    public function created() : bool
+    public function created(): bool
     {
         return $this->complete() !== null;
     }
@@ -45,12 +45,12 @@ class Language extends Base
         }
     }
     
-    public function check(string $key) : bool
+    public function check(string $key): bool
     {
         return isset($this->_languages[$key]);
     }
 
-    public function confirm(string $key, string $onfail = 'en') : string
+    public function confirm(string $key, string $onfail = 'en'): string
     {
         if ($this->check($key)) {
             return $key;
@@ -63,47 +63,47 @@ class Language extends Base
         return $this->codes()[0];
     }
 
-    public function count() : int
+    public function count(): int
     {
         return \count($this->_languages);
     }
 
-    public function complete()
+    public function complete(): array
     {
         return $this->_languages;
     }
 
-    public function codes() : array
+    public function codes(): array
     {
         return \array_keys($this->_languages);
     }
 
-    public function names() : array
+    public function names(): array
     {
         return \array_values($this->_languages);
     }
     
-    public function short() : string
+    public function short(): string
     {
         return $this->current();
     }
     
-    public function full(string $key = null) : string
+    public function full(string $key = null): string
     {
         return $this->get($key ?? $this->current());
     }
     
-    public function current()
+    public function current(): string
     {
         return $this->_current;
     }
     
-    public function code() : string
+    public function code(): string
     {
         return $this->current();
     }
 
-    public function name() : string
+    public function name(): string
     {
         return $this->full();
     }

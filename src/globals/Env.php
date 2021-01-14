@@ -2,12 +2,12 @@
 
 class Env extends superGlobal
 {
-    public function has($var_name) : bool
+    public function has($var_name): bool
     {
         return isset($_ENV[$var_name]);
     }
     
-    public function direct() : array
+    public function direct(): array
     {
         return $_ENV;
     }

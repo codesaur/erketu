@@ -2,12 +2,12 @@
 
 class Post extends superGlobal
 {
-    public function has(string $var_name) : bool
+    public function has(string $var_name): bool
     {
         return parent::has_var(INPUT_POST, $var_name);
     }
     
-    public function hasArray(array $names) : bool
+    public function hasArray(array $names): bool
     {
         foreach ($names as $name) {
             if ( ! $this->has($name)) {
@@ -23,7 +23,7 @@ class Post extends superGlobal
         return parent::filter(INPUT_POST, $var_name, $filter, $options);
     }
 
-    public function direct() : array
+    public function direct(): array
     {
         return $_POST;
     }
@@ -33,7 +33,7 @@ class Post extends superGlobal
         return $_POST[$var_name];
     }
     
-    public function asString($var) : string
+    public function asString($var): string
     {
         if (isset($var)) {
             return \filter_var($var, FILTER_SANITIZE_STRING);
@@ -42,7 +42,7 @@ class Post extends superGlobal
         return '';
     }
 
-    public function asInt($var) : int
+    public function asInt($var): int
     {
         if (isset($var)) {
             return \filter_var($var, FILTER_VALIDATE_INT);

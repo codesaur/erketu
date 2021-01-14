@@ -27,8 +27,7 @@
             "codesaur\\HTML\\": "src/html/",
             "codesaur\\RBAC\\": "src/rbac/",
             "codesaur\\Globals\\": "src/globals/",
-            "codesaur\\DataObject\\": "src/dataobject/",
-            "codesaur\\MultiModel\\": "src/multimodel/"
+            "codesaur\\DataObject\\": "src/dataobject/"
         },
         "files": [
             "src/codesaur.php"
