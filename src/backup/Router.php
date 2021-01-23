@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace codesaur\Http;
+namespace codesaur\Backup;
 
 class Router
 {
@@ -97,8 +97,7 @@ class Router
             $this->_routes[] = $route;
         } else {
             if ($this->check($properties[2])
-                    && defined('CODESAUR_DEVELOPMENT')
-                    && CODESAUR_DEVELOPMENT
+                    && defined('CODESAUR_DEVELOPMENT') && CODESAUR_DEVELOPMENT
             ) {
                 \error_log("Route named [{$properties[2]}] is found and being replaced!");
             }

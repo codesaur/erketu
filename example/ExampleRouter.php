@@ -1,15 +1,17 @@
-<?php namespace erketu\Example;
+<?php
 
-use codesaur\Http\Router;
+namespace erketu\Example;
+
+use codesaur\Base\Router;
 
 class ExampleRouter extends Router
 {
     function __construct()
     {
-        $namespace = __NAMESPACE__;
+        $exampleController = ExampleController::class;
         
-        $this->map('/post-or-put', "post_put@$namespace\\ExampleController", ['methods' => ['POST', 'PUT']]);
-        $this->map('/hello/:firstname', "hello@$namespace\\ExampleController", ['filters' => ['firstname' => '(\w+)']]);
+        $this->map('/hello/:firstname', [$exampleController, 'hello']);
+        $this->map(['POST', 'PUT'], '/post-or-put', [$exampleController, 'post_put']);
         
         $this->any('/echo/:singleword', function ($req) { echo $req->params->singleword; });
     }

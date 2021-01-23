@@ -1,7 +1,12 @@
 {
     "name": "codesaur/erketu",
     "description": "An elegant object-oriented application development framework for PHP 7.2 or newer",
-    "keywords": ["codesaur","mongol","mongolia","mongolian","ololt","framework","narankhuu","coden","php framework","php","кодзавр","монгол","ололт","мөнхийн","мөнхийн-ололт","мөнхийн ололт","наранхүү","коден","munkhiin ololt","ерөнхий бүтэц","фреймворк","raptor","velociraptor","indoraptor","swift seizer","mongoliensis"],
+    "keywords": [
+        "erketu",
+        "mongol", "mongolia", "mongolian", "монгол",
+        "codesaur", "narankhuu", "coden", "кодзавр", "наранхүү"," коден",
+        "ololt", "ололт", "мөнхийн", "мөнхийн-ололт", "мөнхийн ололт", "munkhiin ololt"
+    ],
     "homepage": "https://ololt.mn/codesaur",
     "authors": [
         {
@@ -15,19 +20,20 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-curl": "*",
-        "ext-openssl": "*",
-        "ext-mbstring": "*",
-        "twig/twig": "^2.0",
-        "vlucas/phpdotenv": "^3.1"
+        "ext-mbstring": "*",        
+        "psr/log": ">=1.1.3",
+        "psr/container": ">=1.0.0",
+        "psr/http-message": ">=1.0.1",
+        "psr/http-server-middleware": ">=1.0.1",
+        "twig/twig": ">=3.2.1",
+        "vlucas/phpdotenv": ">=5.2.0"
     },
     "autoload": {
         "psr-4": {
-            "codesaur\\Base\\": "src/base/",
+            "codesaur\\Container\\": "src/container/",
             "codesaur\\Http\\": "src/http/",
-            "codesaur\\HTML\\": "src/html/",
-            "codesaur\\RBAC\\": "src/rbac/",
-            "codesaur\\Globals\\": "src/globals/",
-            "codesaur\\DataObject\\": "src/dataobject/"
+            "codesaur\\Http\\Message\\": "src/http/message/",
+            "codesaur\\Http\\Server\\": "src/http/server/"
         },
         "files": [
             "src/codesaur.php"

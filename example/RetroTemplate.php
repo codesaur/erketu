@@ -1,4 +1,6 @@
-<?php namespace erketu\Example;
+<?php
+
+namespace erketu\Example;
 
 use codesaur\HTML\TwigTemplate;
 

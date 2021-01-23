@@ -1,4 +1,6 @@
-<?php namespace erketu\Example;
+<?php
+
+namespace erketu\Example;
 
 use codesaur\Http\Controller;
 
@@ -33,7 +35,7 @@ class ExampleController extends Controller
         }
         
         $user = $payload->firstname;
-        if ( ! empty($payload->lastname)) {
+        if (!empty($payload->lastname)) {
             $user .= " $payload->lastname";
         }
 
