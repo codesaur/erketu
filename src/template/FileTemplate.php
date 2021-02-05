@@ -54,7 +54,7 @@ class FileTemplate extends MemoryTemplate
 
         $fileSource = $buffer->getContents();
 
-        $buffer->end();
+        $buffer->endClean();
         
         return (string)$fileSource;
     }

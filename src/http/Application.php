@@ -32,14 +32,6 @@ class Application implements RequestHandlerInterface
         return $this->router;
     }
 
-    public function withRouter(Router $router): Application
-    {
-        $clone = clone $this;
-        $clone->router = $router;
-        
-        return $clone;
-    }
-
     public function __call(string $name, array $arguments)
     {
         if (count($arguments) === 0) {
@@ -65,9 +57,7 @@ class Application implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->script_path = dirname($request->getServerParams()['SCRIPT_NAME']);
-        
-        $response = new Response();
-        
+                
         $uri_path = rawurldecode($request->getUri()->getPath());
         $route_path = str_replace($this->script_path, '', $uri_path);
         $route = $this->router->match($route_path, $request->getMethod());
@@ -81,7 +71,7 @@ class Application implements RequestHandlerInterface
 
         $callback = $route->getCallback();            
         if ($callback instanceof Closure) {
-            call_user_func_array($callback, array($request));
+            $response = call_user_func_array($callback, array($request));
         } else {
             $controllerClass = $callback[0];
             if (!class_exists($controllerClass)) {
@@ -94,9 +84,9 @@ class Application implements RequestHandlerInterface
                 throw new BadMethodCallException("Action named $action is not part of $controllerClass!");
             }
 
-            call_user_func_array(array($controller, $action), $route->getParameters());       
+            $response = call_user_func_array(array($controller, $action), $route->getParameters());       
         }
         
-        return $response;
+        return $response instanceof ResponseInterface ? $response : new Response();
     }
 }

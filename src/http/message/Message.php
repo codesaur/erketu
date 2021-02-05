@@ -78,26 +78,10 @@ abstract class Message implements MessageInterface
         return implode(',', $values);
     }
 
-    function addHeader($name, $value)
-    {
-        if ($this->hasHeader($name)) {
-            $this->headers[strtoupper($name)][] = $value;
-        } else {
-            $this->setHeader($name, $value);
-        }
-    }
-
     function setHeader($name, $value)
     {
         $this->headers[strtoupper($name)] = array($value);
     }
-    
-    function removeHeader($name)
-    {
-        if ($this->hasHeader($name)) {
-            unset($this->headers[strtoupper($name)]);
-        }
-    }    
 
     /**
      * {@inheritdoc}
@@ -116,8 +100,12 @@ abstract class Message implements MessageInterface
     public function withAddedHeader($name, $value): MessageInterface
     {
         $clone = clone $this;
-        $clone->addHeader($name, $value);
-
+        if ($this->hasHeader($name)) {
+            $this->headers[strtoupper($name)][] = $value;
+        } else {
+            $this->setHeader($name, $value);
+        }
+                
         return $clone;
     }
 
@@ -127,7 +115,9 @@ abstract class Message implements MessageInterface
     public function withoutHeader($name): MessageInterface
     {
         $clone = clone $this;
-        $clone->removeHeader($name);
+        if ($this->hasHeader($name)) {
+            unset($this->headers[strtoupper($name)]);
+        }
 
         return $clone;
     }

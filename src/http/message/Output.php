@@ -8,18 +8,18 @@ use Psr\Http\Message\StreamInterface;
 
 use codesaur\Base\OutputBuffer;
 
-class AutoOutput implements StreamInterface
+class Output implements StreamInterface
 {    
-    protected $output;
+    protected $buffer;
     
     public function __construct()
     {
-        $this->output = new OutputBuffer();
+        $this->buffer = new OutputBuffer();
         
         if (getenv('OUTPUT_COMPRESS', true) === 'true') {
-            $this->output->startCompress();
+            $this->buffer->startCompress();
         } else {
-            $this->output->start();
+            $this->buffer->start();
         }
     }
     
@@ -32,7 +32,7 @@ class AutoOutput implements StreamInterface
     
     public function getBuffer(): OutputBuffer
     {
-        return $this->output;
+        return $this->buffer;
     }
     
     /**
@@ -48,7 +48,7 @@ class AutoOutput implements StreamInterface
      */
     public function close()
     {
-        $this->output->end();
+        $this->buffer->endClean();
     }
 
     /**
@@ -56,7 +56,7 @@ class AutoOutput implements StreamInterface
      */
     public function detach()
     {
-        $this->output->end();
+        return RuntimeException(__CLASS__ . ' is not detachable!');
     }
 
     /**
@@ -64,7 +64,7 @@ class AutoOutput implements StreamInterface
      */
     public function getSize(): int
     {
-        $this->output->getLength();
+        $this->buffer->getLength();
     }
 
     /**
@@ -148,7 +148,7 @@ class AutoOutput implements StreamInterface
      */
     public function getContents(): string
     {
-        return (string)$this->output->getContents();
+        return (string)$this->buffer->getContents();
     }
 
     /**

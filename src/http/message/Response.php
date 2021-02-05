@@ -14,7 +14,7 @@ class Response extends Message implements ResponseInterface
     
     function __construct()
     {
-        $this->body = new AutoOutput();
+        $this->body = new Output();
     }
     
     /**

@@ -78,7 +78,7 @@ class Router
         
         if (isset($name)) {
             if ($this->check($name)) {
-                $err_msg = "Route [$name] already exists!"; 
+                $err_msg = "Route named [$name] already exists!"; 
                 if (defined('CODESAUR_DEVELOPMENT')
                         && CODESAUR_DEVELOPMENT
                 ) {

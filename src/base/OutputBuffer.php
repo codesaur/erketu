@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace codesaur\Base;
 
@@ -26,7 +26,7 @@ class OutputBuffer
         }
     }
     
-    public function end()
+    public function endClean()
     {
         if (ob_get_level()) {
             ob_end_clean();
