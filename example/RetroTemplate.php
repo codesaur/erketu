@@ -2,7 +2,7 @@
 
 namespace erketu\Example;
 
-use codesaur\HTML\TwigTemplate;
+use codesaur\Template\TwigTemplate;
 
 class RetroTemplate extends TwigTemplate
 {

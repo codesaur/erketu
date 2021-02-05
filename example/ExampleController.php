@@ -2,6 +2,8 @@
 
 namespace erketu\Example;
 
+use Error;
+
 use codesaur\Http\Controller;
 
 class ExampleController extends Controller
@@ -11,32 +13,27 @@ class ExampleController extends Controller
         (new RetroTemplate())->render();
     }
     
-    public function response(): ExampleResponse
-    {
-        return parent::response();
-    }
-    
     public function hello(string $firstname)
     {
         $user = $firstname;
-        if ($this->request()->hasUrlParam('lastname')) {
-            $user .= ' ' .  $this->request()->getUrlParam('lastname');
+        if (isset($this->getRequest()->getQueryParams()['lastname'])) {
+            $user .= ' ' .  $this->getRequest()->getQueryParams()['lastname'];
         }
-
+        
         (new RetroTemplate($user))->render();
     }
     
     public function post_put()
     {
-        $payload = $this->request()->getBodyJson();
+        $payload = $this->getRequest()->getParsedBody();
 
-        if (empty($payload->firstname)) {
-            return $this->response()->error('Invalid request!');
+        if (empty($payload['firstname'])) {
+            throw new Error('Invalid request!');
         }
         
-        $user = $payload->firstname;
-        if (!empty($payload->lastname)) {
-            $user .= " $payload->lastname";
+        $user = $payload['firstname'];
+        if (!empty($payload['lastname'])) {
+            $user .= " {$payload['lastname']}";
         }
 
         (new RetroTemplate($user))->render();

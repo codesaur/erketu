@@ -2,7 +2,9 @@
 
 namespace erketu\Example;
 
-use codesaur\Base\Router;
+use Psr\Http\Message\ServerRequestInterface;
+
+use codesaur\Http\Router;
 
 class ExampleRouter extends Router
 {
@@ -10,9 +12,12 @@ class ExampleRouter extends Router
     {
         $exampleController = ExampleController::class;
         
-        $this->map('/hello/:firstname', [$exampleController, 'hello']);
+        $this->get('/hello/:firstname', [$exampleController, 'hello'], 'hello');
         $this->map(['POST', 'PUT'], '/post-or-put', [$exampleController, 'post_put']);
         
-        $this->any('/echo/:singleword', function ($req) { echo $req->params->singleword; });
+        $this->any('/echo/:singleword', function (ServerRequestInterface $req)
+        {
+            echo $req->getAttribute('singleword');
+        });
     }
 }

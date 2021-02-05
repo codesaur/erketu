@@ -26,14 +26,18 @@
         "psr/http-message": ">=1.0.1",
         "psr/http-server-middleware": ">=1.0.1",
         "twig/twig": ">=3.2.1",
-        "vlucas/phpdotenv": ">=5.2.0"
+        "vlucas/phpdotenv": ">=5.2.0",
+        "fig/http-message-util": ">=1.1.5"
     },
     "autoload": {
         "psr-4": {
+            "codesaur\\Base\\": "src/base/",
             "codesaur\\Container\\": "src/container/",
+            "codesaur\\Globals\\": "src/globals/",
             "codesaur\\Http\\": "src/http/",
             "codesaur\\Http\\Message\\": "src/http/message/",
-            "codesaur\\Http\\Server\\": "src/http/server/"
+            "codesaur\\Http\\Server\\": "src/http/server/",
+            "codesaur\\Template\\": "src/template/"
         },
         "files": [
             "src/codesaur.php"

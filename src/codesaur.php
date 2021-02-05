@@ -23,7 +23,7 @@ if (!function_exists('codesaur_set_environment')) {
     function codesaur_set_environment()
     {
         error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
-
+        
         ini_set('log_errors', 'On');
 
         $vendor_dir = dirname(__FILE__) . '/../../..';
