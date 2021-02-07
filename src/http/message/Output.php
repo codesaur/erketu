@@ -6,8 +6,6 @@ use RuntimeException;
 
 use Psr\Http\Message\StreamInterface;
 
-use codesaur\Base\OutputBuffer;
-
 class Output implements StreamInterface
 {    
     protected $buffer;

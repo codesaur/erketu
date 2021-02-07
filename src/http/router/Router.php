@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace codesaur\Http;
+namespace codesaur\Http\Router;
 
 use Exception;
 use ArgumentCountError;
@@ -9,16 +9,18 @@ use BadMethodCallException;
 use BadFunctionCallException;
 use OutOfRangeException;
 
+use codesaur\Http\Message\RequestMethods;
+
 class Router
 {
     private $_routes = array();
     
-    public function __call(string $method, array $properties)
+    public function __call(string $method, array $properties) : Route
     {
         if (!$this->isRoutingFunction($method)) {
             throw new BadFunctionCallException("Wrong function [$method] call for " . __CLASS__ . '!');
         }
-            
+        
         if (is_array($properties[0])) {
             $methods = $properties[0];
             array_shift($properties);
@@ -36,60 +38,37 @@ class Router
             throw new BadMethodCallException('Bad method call for ' . __CLASS__ . ":$method. Invalid arguments!");
         }
         
-        $route = new Route();
-        $route->setPattern($properties[0]);
+        $pattern = $properties[0];
+        
         if (is_array($properties[1])
                 || is_callable($properties[1])
         ) {
-            $route->setCallback($properties[1]);
+            $callback = $properties[1];
         } elseif (is_string($properties[1])) {
-            $route->setCallback(array($properties[1], 'index'));
+            $callback = array($properties[1], 'index');
         } else {
-            throw new InvalidArgumentException("Invalid callback on route pattern [{$properties[0]}]!");
+            throw new InvalidArgumentException("Invalid callback on route pattern [$pattern]!");
         }
         
-        if (isset($properties[2])) {
-            if (is_array($properties[2])) {
-                $filters = $properties[2];
-            } else {
-                $name = (string)$properties[2];
-                
-                if (isset($properties[3])
-                    && is_array($properties[3])
-                ) {
-                    $filters = $properties[3];
-                }
-            }
+        $filters = array();
+        $specificFilters = array(
+            'uint:' => '(\d+)',
+            'int:' => '(-?\d+)',
+            'float:' => '(-?\d+|-?\d*\.\d+)',
+        );
+        $specificFilterMatch = implode('|', array_keys($specificFilters));
+        $match_pattern = '/\{(' . $specificFilterMatch . ')?([\w\-%]+)\}/';
+        preg_match_all($match_pattern, $pattern, $params);
+        foreach ($params[2] as $index => $param) {
+            $filters[$param] = $specificFilters[$params[1][$index]] ?? '(\w+)';
         }
+        $path = str_replace(array_keys($specificFilters), '', $pattern);
         
-        if (!isset($filters)) {
-            $filters = array();
-            preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $params);
-            foreach ($params[1] as $param) {
-                $filters[$param] = '(\w+)';
-            }
-        }
+        $route = new Route($methods, $path, $filters, $callback);
         
-        $route->setMethods($methods);
+        $this->_routes[] = $route;
         
-        if (!empty($filters)) {
-            $route->setFilters($filters);
-        }
-        
-        if (isset($name)) {
-            if ($this->check($name)) {
-                $err_msg = "Route named [$name] already exists!"; 
-                if (defined('CODESAUR_DEVELOPMENT')
-                        && CODESAUR_DEVELOPMENT
-                ) {
-                    error_log($err_msg);
-                }
-                throw new Exception($err_msg);
-            }
-            $this->_routes[$name] = $route;
-        } else {
-            $this->_routes[] = $route;
-        }
+        return end($this->_routes);
     }
     
     public function check(string $routeName): bool
@@ -110,14 +89,20 @@ class Router
             }
             
             $params = [];
-            if (preg_match_all('/:([\w\-%]+)/', $route->getPattern(), $paramKeys)) {
+            if (preg_match_all('/\{([\w\-%]+)\}/', $route->getPattern(), $paramKeys)) {
                 if (count($paramKeys[1]) !== (count($matches) - 1)) {
                     continue;
                 }
                 
                 foreach ($paramKeys[1] as $key => $name) {
                     if (isset($matches[$key + 1])) {
-                        $params[$name] = $matches[$key + 1];
+                        if ($route->getFilters()[$name] === '(\w+)') {
+                            $params[$name] = $matches[$key + 1];
+                        } elseif ($route->getFilters()[$name] === '(-?\d+|-?\d*\.\d+)') {
+                            $params[$name] = (float)$matches[$key + 1];
+                        } else {
+                            $params[$name] = (int)$matches[$key + 1];
+                        }
                     }
                 }
             }
@@ -144,10 +129,10 @@ class Router
             
             $paramKeys = array();
             $url = $route->getPattern();
-            if ($params && preg_match_all('/:(\w+)/', $url, $paramKeys)) {
+            if ($params && preg_match_all('/\{(\w+)\}/', $url, $paramKeys)) {
                 foreach ($paramKeys[1] as $key) {
                     if (isset($params[$key])) {
-                        $url = preg_replace('/:(\w+)/', $params[$key], $url, 1);
+                        $url = preg_replace('/\{(\w+)\}/', $params[$key], $url, 1);
                     }
                 }
             }
@@ -180,7 +165,7 @@ class Router
             return $this->requestMethods;            
         }
         
-        $this->requestMethods = (new Message\RequestMethods)->getMethods();
+        $this->requestMethods = (new RequestMethods())->getMethods();
         return $this->requestMethods;
     }
     

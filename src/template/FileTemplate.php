@@ -2,7 +2,7 @@
 
 namespace codesaur\Template;
 
-use codesaur\Base\OutputBuffer;
+use codesaur\Http\Message\OutputBuffer;
 
 class FileTemplate extends MemoryTemplate
 {

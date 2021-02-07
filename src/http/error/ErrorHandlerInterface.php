@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace codesaur\Base;
+namespace codesaur\Http\Error;
 
 use Throwable;
 

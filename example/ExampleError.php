@@ -5,7 +5,7 @@ namespace erketu\Example;
 use Throwable;
 use Exception;
 
-use codesaur\Base\ErrorHandlerInterface;
+use codesaur\Http\Error\ErrorHandlerInterface;
 use codesaur\Http\Message\ReasonPrhaseInterface;
 use codesaur\Template\FileTemplate;
 

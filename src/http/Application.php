@@ -10,8 +10,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use codesaur\Base\ErrorHandlerInterface;
+use codesaur\Http\Error\ErrorHandlerInterface;
+use codesaur\Http\Error\DefaultErrorHandler;
 use codesaur\Http\Message\Response;
+use codesaur\Http\Router\Router;
 
 class Application implements RequestHandlerInterface
 {
@@ -34,21 +36,19 @@ class Application implements RequestHandlerInterface
 
     public function __call(string $name, array $arguments)
     {
-        if (count($arguments) === 0) {
-            throw new BadMethodCallException("Bad method [$name] call for " . __CLASS__ . '. Empty arguments!');
-        }
-        
-        if ($name === 'use') {
-            if ($arguments[0] instanceof Router) {
-                return $this->router->merge($arguments[0]);
-            } elseif ($arguments[0] instanceof ErrorHandlerInterface) {
-                return set_exception_handler(array($arguments[0], 'error'));
+        if (count($arguments) !== 0) {
+            if ($name === 'use') {
+                if ($arguments[0] instanceof Router) {
+                    return $this->router->merge($arguments[0]);
+                } elseif ($arguments[0] instanceof ErrorHandlerInterface) {
+                    return set_exception_handler(array($arguments[0], 'error'));
+                }
+            } else {
+                return call_user_func_array(array($this->router, $name), $arguments);
             }
-        } else {
-            return call_user_func_array(array($this->router, $name), $arguments);
         }
         
-        throw new BadMethodCallException("Invalid method [$name] call for " . __CLASS__ . '!');
+        throw new BadMethodCallException("Bad method [$name] call for " . __CLASS__ . '!');
     }
     
     /**

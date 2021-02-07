@@ -7,8 +7,6 @@ namespace erketu\Example;
  * This is an example script!
  */
 
-use Error;
-
 use Psr\Http\Message\ServerRequestInterface;
 
 use codesaur\Http\Message\ServerRequest;
@@ -28,14 +26,12 @@ $application->use(new ExampleError());
 
 $application->any('/', ExampleController::class);
 
+
 $application->use(new ExampleRouter());
 
-$application->get('/home', function ()
-{
-    (new RetroTemplate())->render();
-});
+$application->get('/home', function () { (new RetroTemplate())->render(); })->name('home');
 
-$application->get('/hello/:firstname/:lastname', function (ServerRequestInterface $req) 
+$application->get('/hello/{firstname}/{lastname}', function (ServerRequestInterface $req) 
 {
     $name = "{$req->getAttribute('firstname')} {$req->getAttribute('lastname')}";
     
@@ -47,7 +43,7 @@ $application->post('/hello/post', function (ServerRequestInterface $req)
     $payload = $req->getParsedBody();
 
     if (empty($payload['firstname'])) {
-        throw new Error('Invalid request!');
+        throw new \Error('Invalid request!');
     }
 
     $user = $payload['firstname'];
@@ -56,6 +52,20 @@ $application->post('/hello/post', function (ServerRequestInterface $req)
     }
 
     (new RetroTemplate($user))->render();
+});
+
+$application->get('/float/{float:number}', [ExampleController::class, 'float']);
+
+$application->get('/sum/{int:a}/{uint:b}', function (ServerRequestInterface $req)
+{
+    $a = $req->getAttribute('a');
+    $b = $req->getAttribute('b');
+
+    $sum = $a + $b;
+
+    var_dump($a, $b, $sum);
+    
+    echo "$a + $b = $sum";
 });
 
 $application->handle($request);

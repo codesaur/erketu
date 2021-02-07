@@ -1,15 +1,38 @@
 <?php declare(strict_types=1);
 
-namespace codesaur\Http;
+namespace codesaur\Http\Router;
 
 class Route
 {
+    private $_methods;
     private $_pattern;
+    private $_filters;
     private $_callback;
     
-    private $_params  = array();
-    private $_filters = array();
-    private $_methods = array('GET');
+    private $_name;
+    private $_params;
+    
+    function __construct(
+            array  $methods,
+            string $pattern,
+            array  $filters,
+                   $callback
+    ) {
+        $this->setMethods($methods);
+        $this->setPattern($pattern);
+        $this->setFilters($filters);
+        $this->setCallback($callback);
+    }
+    
+    public function name(string $name)
+    {
+        $this->_name = $name;
+    }
+    
+    public function getName(): ?string
+    {
+        return $this->_name;
+    }
     
     public function getPattern(): string
     {
@@ -63,7 +86,7 @@ class Route
     
     public function getRegex()
     {
-        return preg_replace_callback('/:(\w+)/', array(&$this, 'substituteFilter'), $this->getPattern());
+        return preg_replace_callback('/\{(\w+)\}/', array(&$this, 'substituteFilter'), $this->getPattern());
     }
     
     final function substituteFilter($matches): string

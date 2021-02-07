@@ -38,4 +38,9 @@ class ExampleController extends Controller
 
         (new RetroTemplate($user))->render();
     }
+    
+    public function float(float $number)
+    {
+        var_dump($number);
+    }
 }

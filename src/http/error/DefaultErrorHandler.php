@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace codesaur\Http;
+namespace codesaur\Http\Error;
 
-use codesaur\Base\ErrorHandlerInterface;
 use codesaur\Http\Message\ReasonPrhaseInterface;
 
 use Throwable;
