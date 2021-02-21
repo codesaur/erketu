@@ -26,17 +26,16 @@ $application->use(new ExampleError());
 
 $application->any('/', ExampleController::class);
 
-
 $application->use(new ExampleRouter());
 
 $application->get('/home', function () { (new RetroTemplate())->render(); })->name('home');
 
-$application->get('/hello/{firstname}/{lastname}', function (ServerRequestInterface $req) 
+$application->get('/hello/{string:firstname}/{lastname}', function (ServerRequestInterface $req) 
 {
     $name = "{$req->getAttribute('firstname')} {$req->getAttribute('lastname')}";
     
     (new RetroTemplate($name))->render();
-});
+})->name('hello');
 
 $application->post('/hello/post', function (ServerRequestInterface $req)
 {
@@ -54,7 +53,7 @@ $application->post('/hello/post', function (ServerRequestInterface $req)
     (new RetroTemplate($user))->render();
 });
 
-$application->get('/float/{float:number}', [ExampleController::class, 'float']);
+$application->get('/float/{float:number}', [ExampleController::class, 'float'])->name('float');
 
 $application->get('/sum/{int:a}/{uint:b}', function (ServerRequestInterface $req)
 {
@@ -66,6 +65,6 @@ $application->get('/sum/{int:a}/{uint:b}', function (ServerRequestInterface $req
     var_dump($a, $b, $sum);
     
     echo "$a + $b = $sum";
-});
+})->name('sum');
 
 $application->handle($request);

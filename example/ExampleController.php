@@ -7,7 +7,7 @@ use Error;
 use codesaur\Http\Controller;
 
 class ExampleController extends Controller
-{
+{    
     public function index()
     {
         (new RetroTemplate())->render();

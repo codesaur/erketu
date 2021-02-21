@@ -9,16 +9,14 @@ use codesaur\Http\Router\Router;
 class ExampleRouter extends Router
 {
     function __construct()
-    {
-        $exampleController = ExampleController::class;
+    {        
+        $this->get('/hello/{firstname}', [ExampleController::class, 'hello'])->name('hi');
         
-        $this->get('/hello/{firstname}', [$exampleController, 'hello'])->name('hello');
-        
-        $this->map(['POST', 'PUT'], '/post-or-put', [$exampleController, 'post_put']);
+        $this->map(['POST', 'PUT'], '/post-or-put', [ExampleController::class, 'post_put']);
         
         $this->any('/echo/{singleword}', function (ServerRequestInterface $req)
         {
             echo $req->getAttribute('singleword');
-        });
+        })->name('echo');
     }
 }

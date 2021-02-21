@@ -6,21 +6,19 @@ class Route
 {
     private $_methods;
     private $_pattern;
-    private $_filters;
     private $_callback;
-    
+
     private $_name;
     private $_params;
+    private $_filters;
     
     function __construct(
             array  $methods,
             string $pattern,
-            array  $filters,
                    $callback
     ) {
         $this->setMethods($methods);
         $this->setPattern($pattern);
-        $this->setFilters($filters);
         $this->setCallback($callback);
     }
     
@@ -54,7 +52,7 @@ class Route
         $this->_methods = $methods;
     }
     
-    public function getFilters(): array
+    public function getFilters(): ?array
     {
         return $this->_filters;
     }
@@ -84,18 +82,18 @@ class Route
         $this->_callback = $callback;
     }
     
-    public function getRegex()
+    public function getRegex(string $filters_regex): string
     {
-        return preg_replace_callback('/\{(\w+)\}/', array(&$this, 'substituteFilter'), $this->getPattern());
+        return '@^' . preg_replace_callback($filters_regex, array(&$this, 'getFilterRegex'), $this->getPattern()) . '/?$@i';
     }
     
-    final function substituteFilter($matches): string
+    final function getFilterRegex($matches): string
     {
-        if (isset($matches[1])
-                && isset($this->_filters[$matches[1]])) {
-            return $this->_filters[$matches[1]];
+        if (isset($matches[2])
+                && isset($this->_filters[$matches[2]])) {
+            return $this->_filters[$matches[2]];
         }
         
-        return '([\w-%]+)';
+        return '(\w+)';
     }
 }

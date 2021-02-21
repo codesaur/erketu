@@ -2,19 +2,20 @@
 
 namespace codesaur\Http\Router;
 
-use Exception;
 use ArgumentCountError;
 use InvalidArgumentException;
 use BadMethodCallException;
 use BadFunctionCallException;
-use OutOfRangeException;
+
+use Psr\Http\Message\UriInterface;
 
 use codesaur\Http\Message\RequestMethods;
+use codesaur\Http\Message\Uri;
 
-class Router
-{
-    private $_routes = array();
-    
+class Router implements RouterInterface
+{    
+    private $_routes = array();    
+        
     public function __call(string $method, array $properties) : Route
     {
         if (!$this->isRoutingFunction($method)) {
@@ -50,55 +51,61 @@ class Router
             throw new InvalidArgumentException("Invalid callback on route pattern [$pattern]!");
         }
         
+        $route = new Route($methods, $pattern, $callback);
+
         $filters = array();
-        $specificFilters = array(
-            'uint:' => '(\d+)',
-            'int:' => '(-?\d+)',
-            'float:' => '(-?\d+|-?\d*\.\d+)',
-        );
-        $specificFilterMatch = implode('|', array_keys($specificFilters));
-        $match_pattern = '/\{(' . $specificFilterMatch . ')?([\w\-%]+)\}/';
-        preg_match_all($match_pattern, $pattern, $params);
+        preg_match_all(self::PARAMS_FILTER, $pattern, $params);        
         foreach ($params[2] as $index => $param) {
-            $filters[$param] = $specificFilters[$params[1][$index]] ?? '(\w+)';
+            switch ($params[1][$index]) {
+                case self::PARAM_INT: $filters[$param] = self::FILTER_INT; break;
+                case self::PARAM_UNSIGNED_INT: $filters[$param] = self::FILTER_UNSIGNED_INT; break;
+                case self::PARAM_FLOAT: $filters[$param] = self::FILTER_FLOAT; break;
+                default: $filters[$param] = self::FILTER_STRING;
+            }
         }
-        $path = str_replace(array_keys($specificFilters), '', $pattern);
-        
-        $route = new Route($methods, $path, $filters, $callback);
+        $route->setFilters($filters);
         
         $this->_routes[] = $route;
         
         return end($this->_routes);
     }
     
-    public function check(string $routeName): bool
+    public function getRouteByName(string $name): ?Route
     {
-         return isset($this->_routes[$routeName]);
+        foreach ($this->getRoutes() as $route) {
+            if ($route->getName() === $name) {
+                return $route;
+            }            
+        }
+        
+        return null;
     }
     
-    public function match(string $path, string $method): ?Route
+    public function match(string $pattern ,string $method): ?Route
     {
         foreach ($this->_routes as $route) {
             if (!in_array($method, $route->getMethods())) {
                 continue;
             }
             
-            $pattern = '@^' . $route->getRegex() . '/?$@i';
-            if (!preg_match($pattern, $path, $matches)) {
+            $route_regex = $route->getRegex(self::PARAMS_FILTER);
+            if (!preg_match($route_regex, $pattern, $matches)) {
                 continue;
             }
-            
+        
             $params = [];
-            if (preg_match_all('/\{([\w\-%]+)\}/', $route->getPattern(), $paramKeys)) {
-                if (count($paramKeys[1]) !== (count($matches) - 1)) {
+            if (preg_match_all(self::PARAMS_FILTER, $route->getPattern(), $paramKeys)) {
+                if (count($paramKeys[2]) !== (count($matches) - 1)) {
                     continue;
                 }
-                
-                foreach ($paramKeys[1] as $key => $name) {
+                foreach ($paramKeys[2] as $key => $name) {
                     if (isset($matches[$key + 1])) {
-                        if ($route->getFilters()[$name] === '(\w+)') {
+                        $filter = $route->getFilters()[$name];
+                        if ($filter === self::FILTER_STRING
+                        ) {
                             $params[$name] = $matches[$key + 1];
-                        } elseif ($route->getFilters()[$name] === '(-?\d+|-?\d*\.\d+)') {
+                        } elseif ($filter === self::FILTER_FLOAT
+                        ) {
                             $params[$name] = (float)$matches[$key + 1];
                         } else {
                             $params[$name] = (int)$matches[$key + 1];
@@ -111,42 +118,60 @@ class Router
             return $route;
         }
         
-        if ($path === '/' . __FUNCTION__) {
+        if ($pattern === '/' . __FUNCTION__) {
             die(get_class($this));
         }
         
         return null;
     }
     
-    public function generate(string $routeName, array $params): array
+    public function generate(string $routeName, array $params): ?UriInterface
     {
-        try {
-            if (!$this->check($routeName)) {
-                throw new OutOfRangeException("NO ROUTE: $routeName");
-            }
-            
-            $route = $this->_routes[$routeName];
-            
-            $paramKeys = array();
-            $url = $route->getPattern();
-            if ($params && preg_match_all('/\{(\w+)\}/', $url, $paramKeys)) {
-                foreach ($paramKeys[1] as $key) {
-                    if (isset($params[$key])) {
-                        $url = preg_replace('/\{(\w+)\}/', $params[$key], $url, 1);
-                    }
-                }
-            }
-            
-            return array($url, $route->getMethods());
-        } catch (Exception $e) {
+        $route = $this->getRouteByName($routeName);            
+        if (!$route instanceof Route) {
             if (defined('CODESAUR_DEVELOPMENT')
                     && CODESAUR_DEVELOPMENT
             ) {
-                error_log($e->getMessage());
+                error_log("NO ROUTE: $routeName");
             }
-            
-            return array();
+
+            return null;
         }
+
+        $paramKeys = array();
+        $pattern = $route->getPattern();
+        if ($params && preg_match_all(self::PARAMS_FILTER, $pattern, $paramKeys)) {
+            foreach ($paramKeys[2] as $index => $key) {
+                if (isset($params[$key])) {                        
+                    $filter = $route->getFilters()[$key];
+                    switch ($filter) {
+                        case self::FILTER_FLOAT: 
+                            if (!is_numeric($params[$key])) {
+                                throw new InvalidArgumentException("[$pattern] Route parameter expected to be float value!");
+                            }
+                            break;
+                        case self::FILTER_INT: 
+                            if (!is_int($params[$key])) {
+                                throw new InvalidArgumentException("[$pattern] Route parameter expected to be integer value!");
+                            }
+                            break;
+                        case self::FILTER_UNSIGNED_INT:
+                            $is_uint = filter_var($params[$key], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)));
+                            if ($is_uint === false) {
+                                throw new InvalidArgumentException("[$pattern] Route parameter expected to be unsigned integer value!");
+                            }
+                            break;
+                    }
+
+                    $pattern = preg_replace('/\{' . $paramKeys[1][$index] . '(\w+)\}/', $params[$key], $pattern, 1);
+                }
+            }
+        }
+
+        $uri = new Uri();
+        $uri->setPath($pattern);
+
+        return $uri;
     }
     
     public function merge(Router $router)

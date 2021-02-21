@@ -4,7 +4,7 @@ namespace codesaur\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-class Controller
+abstract class Controller
 {
     private $_request;
     
