@@ -84,7 +84,7 @@ class Route
     
     public function getRegex(string $filters_regex): string
     {
-        return '@^' . preg_replace_callback($filters_regex, array(&$this, 'getFilterRegex'), $this->getPattern()) . '/?$@i';
+        return preg_replace_callback($filters_regex, array(&$this, 'getFilterRegex'), $this->getPattern()) ;
     }
     
     final function getFilterRegex($matches): string

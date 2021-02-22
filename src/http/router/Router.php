@@ -14,7 +14,9 @@ use codesaur\Http\Message\Uri;
 
 class Router implements RouterInterface
 {    
-    private $_routes = array();    
+    private $_pipe = '';
+    
+    private $_routes = array();
         
     public function __call(string $method, array $properties) : Route
     {
@@ -81,15 +83,17 @@ class Router implements RouterInterface
         return null;
     }
     
-    public function match(string $pattern ,string $method): ?Route
+    public function match(string $pattern, string $method): ?Route
     {
         foreach ($this->_routes as $route) {
             if (!in_array($method, $route->getMethods())) {
                 continue;
             }
             
-            $route_regex = $route->getRegex(self::PARAMS_FILTER);
-            if (!preg_match($route_regex, $pattern, $matches)) {
+            $pattern_regex = '@^' . $this->getPipe();
+            $pattern_regex .= $route->getRegex(self::PARAMS_FILTER);
+            $pattern_regex .= '/?$@i';
+            if (!preg_match($pattern_regex, $pattern, $matches)) {
                 continue;
             }
         
@@ -177,6 +181,16 @@ class Router implements RouterInterface
     public function merge(Router $router)
     {
         $this->_routes = array_merge($this->_routes, $router->getRoutes());
+    }
+    
+    public function getPipe(): string
+    {
+        return $this->_pipe;
+    }
+    
+    public function setPipe(string $pipe)
+    {
+        $this->_pipe = rtrim($pipe, '/');
     }
     
     public function getRoutes(): array

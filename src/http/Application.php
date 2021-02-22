@@ -17,13 +17,14 @@ use codesaur\Http\Router\Router;
 class Application implements RequestHandlerInterface
 {
     protected $router;
-
-    public function &router(): Router
+    
+    function __construct()
     {
-        if (!isset($this->router)) {
-            $this->router = new Router();
-        }
-        
+        $this->router = new Router();
+    }
+
+    public function getRouter(): Router
+    {
         return $this->router;
     }
 
@@ -32,12 +33,12 @@ class Application implements RequestHandlerInterface
         if (count($arguments) !== 0) {
             if ($name === 'use') {
                 if ($arguments[0] instanceof Router) {
-                    return $this->router()->merge($arguments[0]);
+                    return $this->router->merge($arguments[0]);
                 } elseif ($arguments[0] instanceof ExceptionHandlerInterface) {
                     return set_exception_handler(array($arguments[0], 'exception'));
                 }
             } else {
-                return call_user_func_array(array($this->router(), $name), $arguments);
+                return call_user_func_array(array($this->router, $name), $arguments);
             }
         }
         
@@ -51,8 +52,8 @@ class Application implements RequestHandlerInterface
     {
         $script_path = dirname($request->getServerParams()['SCRIPT_NAME']);                
         $uri_path = rawurldecode($request->getUri()->getPath());
-        $route_path = str_replace($script_path, '', $uri_path);
-        $route = $this->router()->match($route_path, $request->getMethod());
+        $target_path = str_replace($script_path, '', $uri_path);
+        $route = $this->router->match($target_path, $request->getMethod());
         if (!isset($route)) {
             throw new Error('Unknown route!', 404);
         }
