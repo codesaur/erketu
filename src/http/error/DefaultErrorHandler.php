@@ -24,7 +24,7 @@ class DefaultErrorHandler implements ErrorHandlerInterface
                 http_response_code($code);
             }
             
-            $title .= " $code";
+            $title .= " [HTTP $code]";
         }
         
         error_log("$title: $message");
