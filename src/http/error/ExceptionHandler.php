@@ -7,9 +7,9 @@ use codesaur\Http\Message\ReasonPrhaseInterface;
 use Throwable;
 use Exception;
 
-class DefaultErrorHandler implements ErrorHandlerInterface
+class ExceptionHandler implements ExceptionHandlerInterface
 {
-    public function error(Throwable $throwable)
+    public function exception(Throwable $throwable)
     {
         $code = $throwable->getCode();
         $message = $throwable->getMessage();

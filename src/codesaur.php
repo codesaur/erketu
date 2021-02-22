@@ -19,7 +19,9 @@
 define('CODESAUR_FRAMEWORK', 'codesaur - framework');
 define('CODESAUR_AUTHOR', 'Narankhuu N, codesaur@gmail.com, +976 99000287, Munkhiin Ololt LLC');
 
-if (!function_exists('codesaur_set_environment')) {
+use codesaur\Http\Error\ExceptionHandler;
+
+if (!function_exists('codesaur_set_environment')) {    
     function codesaur_set_environment()
     {
         error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
@@ -35,6 +37,8 @@ if (!function_exists('codesaur_set_environment')) {
         }
 
         set_error_handler('\codesaur_error_log');
+        
+        set_exception_handler(array(new ExceptionHandler(), 'exception'));
 
         if (file_exists("$vendor_dir/../.env")) {
             Dotenv\Dotenv::create("$vendor_dir/..")->load();
