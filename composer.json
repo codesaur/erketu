@@ -31,13 +31,13 @@
     },
     "autoload": {
         "psr-4": {
-            "codesaur\\Container\\": "src/container/",
             "codesaur\\Globals\\": "src/globals/",
             "codesaur\\Http\\": "src/http/",
             "codesaur\\Http\\Message\\": "src/http/message/",
             "codesaur\\Http\\Server\\": "src/http/server/",
             "codesaur\\Http\\Router\\": "src/http/router/",
-            "codesaur\\Template\\": "src/template/"
+            "codesaur\\Template\\": "src/template/",
+            "codesaur\\DataObject\\": "src/dataobject/"
         },
         "files": [
             "src/codesaur.php"
