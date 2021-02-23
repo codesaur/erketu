@@ -55,7 +55,7 @@ class Application implements RequestHandlerInterface
         $target_path = str_replace($script_path, '', $uri_path);
         $route = $this->router->match($target_path, $request->getMethod());
         if (!isset($route)) {
-            throw new Error('Unknown route!', 404);
+            throw new Error("Unknown route pattern [$target_path]!", 404);
         }
 
         foreach ($route->getParameters() as $param => $value) {

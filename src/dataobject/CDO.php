@@ -3,6 +3,7 @@
 namespace codesaur\DataObject;
 
 use PDO;
+use Exception;
 
 class CDO extends PDO
 {
@@ -12,8 +13,7 @@ class CDO extends PDO
     function __construct(array $config)
     {
         parent::__construct(
-                "{$config['driver']}:host={$config['host']}"
-                . ";dbname={$config['dbname']};charset={$config['charset']}",
+                "{$config['driver']}:host={$config['host']};charset={$config['charset']}",
                 $config['username'], $config['password'], $config['options']
         );
                 
@@ -41,11 +41,6 @@ class CDO extends PDO
         return $this->getConfig()['collation'];
     }
 
-    public function getDB(): ?string
-    {
-        return $this->getConfig()['name'];
-    }
-    
     public function getDriver(): ?string
     {
         return $this->getConfig()['driver'];
@@ -61,9 +56,28 @@ class CDO extends PDO
         return $this->getConfig()['host'];
     }
 
-    public function selectDB(string $db)
+    public function getDB(): ?string
     {
-        return $this->exec("USE $db") !== false;
+        return $this->getConfig()['dbname'];
+    }
+
+    public function useDB(?string $db = null)
+    {
+        if (empty($db)) {
+            if (empty($this->getDB())) {
+                throw new Exception('Must provide a database name!');
+            }
+            
+            $db = $this->getDB();
+        }
+        
+        if ($this->exec("USE $db") !== false) {
+            $this->_config['dbname'] = $db;
+            
+            return true;
+        }
+        
+        return false;
     }
     
     public function describe(string $table, $fetch_style = PDO::FETCH_ASSOC): array
