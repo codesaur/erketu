@@ -20,16 +20,21 @@ abstract class Controller
         return $this->_request;
     }
     
-    final function getQueryParam($name)
+    final function getParsedBody()
     {
-        return $this->getRequest()->getQueryParams()[$name] ?? null;
+        return $this->getRequest()->getParsedBody();
     }
-    
+
     final function getBodyParam($name)
     {
         return $this->getRequest()->getParsedBody()[$name] ?? null;
     }
 
+    final function getQueryParam($name)
+    {
+        return $this->getRequest()->getQueryParams()[$name] ?? null;
+    }
+    
     final function getPostParam($name, int $filter = FILTER_DEFAULT, $options = null)
     {
         $post = new Post();
